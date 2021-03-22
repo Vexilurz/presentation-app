@@ -1,14 +1,26 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { MainPage } from './main/MainPage';
+import { VideoEditorPage } from './video-editor/VideoEditorPage';
+import { VideoPlayerPage } from './video-player/VideoPlayerPage';
 
 interface Props {}
 
 export const AppRoutes = (props: Props) => {
   return (
     <Switch>
-      {/* <Route path="/main-page">
+      <Route exact path="/">
         <MainPage />
-      </Route> */}
+      </Route>
+      <Route path="/editor">
+        <VideoEditorPage />
+      </Route>
+      <Route path="/player">
+        <VideoPlayerPage />
+      </Route>
+      <Route path="*">
+        <Redirect to="/" />
+      </Route>
     </Switch>
   );
 };
