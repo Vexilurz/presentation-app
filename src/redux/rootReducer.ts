@@ -1,7 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import presentation from './presentation/presentationSlice';
 
 const rootReducer = combineReducers({
-  // place your reducers here
+  presentation,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
