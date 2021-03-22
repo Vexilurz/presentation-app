@@ -7,11 +7,11 @@ interface Props {
 
 export default function Layout({ children }: Props): ReactElement {
   return (
-    <>
+    <div className="h-screen">
       <Navbar/>
-      <main>
+      <main className="content-area">
         {children}
       </main>
-    </> 
+    </div> 
   );
 }

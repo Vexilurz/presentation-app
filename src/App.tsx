@@ -4,11 +4,11 @@ import { AppRoutes } from './pages/AppRoutes';
 
 function App() {
   return (
-    <div>
+    <>
       <Layout>
         <AppRoutes />
       </Layout>
-    </div>
+    </>
   );
 }
 

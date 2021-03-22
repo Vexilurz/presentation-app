@@ -5,3 +5,7 @@
 body {
   margin: 0;
 }
+
+.content-area {
+  height: calc(100vh - theme('spacing.16'));
+}
