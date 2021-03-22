@@ -1,7 +1,8 @@
 {
-  "name": "react-typescript-redux",
+  "name": "presentation-app",
   "version": "0.1.0",
   "private": true,
+  "author": "Konstantin Kurganov <kurganovk@gmail.com>",
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.0",
     "@testing-library/jest-dom": "^5.11.9",
