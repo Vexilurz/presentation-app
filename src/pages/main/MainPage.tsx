@@ -1,13 +1,12 @@
-import React from 'react'
+import { Container, Typography } from '@material-ui/core';
+import React from 'react';
 
-interface Props {
-  
-}
+interface Props {}
 
 export const MainPage = (props: Props) => {
   return (
-    <div>
-      <h1>We are on the main page</h1>
-    </div>
-  )
-}
+    <Container maxWidth="lg">
+      <Typography variant="h3">Main page</Typography>
+    </Container>
+  );
+};
