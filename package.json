@@ -4,7 +4,6 @@
   "private": true,
   "author": "Konstantin Kurganov <kurganovk@gmail.com>",
   "dependencies": {
-    "@craco/craco": "^6.1.1",
     "@reduxjs/toolkit": "^1.5.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -24,9 +23,9 @@
     "web-vitals": "^1.1.1"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

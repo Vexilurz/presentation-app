@@ -7,9 +7,9 @@ interface Props {
 
 export default function Layout({ children }: Props): ReactElement {
   return (
-    <div className="h-screen">
+    <div >
       <Navbar/>
-      <main className="content-area">
+      <main>
         {children}
       </main>
     </div> 
