@@ -1,4 +1,5 @@
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import camelcaseKeys from 'camelcase-keys';
 import { HttpClient } from '../http-client/HttpClient';
 
 const baseUrl = process.env.REACT_APP_BASE_URL as string;
@@ -30,7 +31,7 @@ export class AixmusicApi extends HttpClient {
   }
 
   handleResponse(res: AxiosResponse) {
-    return res.data;
+    return camelcaseKeys(res.data, {deep: true});
   }
 
   handleError(error: AxiosError): never {
