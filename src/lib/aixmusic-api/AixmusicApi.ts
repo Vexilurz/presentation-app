@@ -25,6 +25,10 @@ export class AixmusicApi extends HttpClient {
     return await this.instance.get(`presentations/${url}`);
   }
 
+  public async createPresentation(dto: DTO): Promise<Presentation> {
+    return await this.instance.post(`presentations/create`, dto);
+  }
+
   handleRequest(config: AxiosRequestConfig) {
     config.headers["Authorization"] = "bearer " + token;
     return config;
