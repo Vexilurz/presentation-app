@@ -1,5 +1,6 @@
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import camelcaseKeys from 'camelcase-keys';
+import { IApiPresentation } from '../../types/AixmusicApiTypes';
 import { HttpClient } from '../http-client/HttpClient';
 
 const baseUrl = process.env.REACT_APP_BASE_URL as string;
@@ -20,14 +21,13 @@ export class AixmusicApi extends HttpClient {
     return this.classInstance;
   }
 
-  // TODO: Add types
-  public async getPresentation(url: string): Promise<any> {
+  public async getPresentation(url: string): Promise<IApiPresentation> {
     return await this.instance.get(`presentations/${url}`);
   }
 
-  public async createPresentation(dto: DTO): Promise<Presentation> {
-    return await this.instance.post(`presentations/create`, dto);
-  }
+  // public async createPresentation(dto: DTO): Promise<Presentation> {
+  //   return await this.instance.post(`presentations/create`, dto);
+  // }
 
   handleRequest(config: AxiosRequestConfig) {
     config.headers["Authorization"] = "bearer " + token;
