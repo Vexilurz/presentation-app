@@ -1,4 +1,4 @@
-export interface IApiPresentation {
+export interface IPresentationResponse {
   id: number,
   title: string,
   description: string,
@@ -7,13 +7,13 @@ export interface IApiPresentation {
   password: string,
   userId: number,
   url: string,
-  createdAt?: string,
-  updatedAt?: string,
+  createdAt: string,
+  updatedAt: string,
   audio: string,
-  slides: IApiSlide[],
+  slides?: ISlideResponse[], // slides don't exist when creating presentation
 }
 
-export interface IApiSlide {
+export interface ISlideResponse {
   id: number,
   presentationUrl: string,
   order: number,
@@ -21,8 +21,6 @@ export interface IApiSlide {
   image: string,
   duration: number,
   userId: number,
-  createdAt?: string,
-  updatedAt?: string,
+  createdAt: string,
+  updatedAt: string,
 }
-
-// CreateUserDTO
