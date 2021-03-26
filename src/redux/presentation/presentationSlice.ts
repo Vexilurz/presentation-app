@@ -1,14 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { IPresentationResponse } from '../../types/AixmusicApiTypes';
 import { getPresentation } from './presentationThunks';
 
 interface PresentationState {
   // TODO: Add types
-  presentation: any,
+  presentation: IPresentationResponse,
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: PresentationState = {
-  presentation: {},
+  presentation: {} as IPresentationResponse,
   status: 'idle'
 };
 
