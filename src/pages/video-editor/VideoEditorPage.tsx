@@ -12,6 +12,8 @@ import { RootState } from '../../redux/rootReducer';
 import { useAppDispatch } from '../../redux/store';
 import Paper from '@material-ui/core/Paper';
 import { useParams } from 'react-router-dom';
+import { SlidesView } from './SlidesView';
+import PdfViewer from '../../lib/pdf/PdfReader';
 
 interface Props {}
 
@@ -38,21 +40,23 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const VideoEditorPage = (props: Props) => {
   const url = 'test';
-  const state = useSelector((state: RootState) => state.presentation);
-  const dispatch = useAppDispatch();
+  // const state = useSelector((state: RootState) => state.presentation);
+  // const dispatch = useAppDispatch();
   const classes = useStyles();
 
   let { presentationUrl } = useParams<ParamTypes>();
 
-  useEffect(() => {
-    dispatch(getPresentation(presentationUrl));
-  }, []);
-
   return (
     <div className={classes.root}>
       <Grid container className={classes.grid}>
-        <Grid item md={3} className={classes.sidebar}>{JSON.stringify(state.presentation)}</Grid>
-        <Grid item md={9}></Grid>
+        <Grid item md={3} className={classes.sidebar}>
+          <SlidesView 
+            presentationUrl={presentationUrl}
+          />
+        </Grid>
+        <Grid item md={9}>
+          <PdfViewer url={'http://www.africau.edu/images/default/sample.pdf'}/>
+        </Grid>
       </Grid>
     </div>
   );

@@ -3,7 +3,6 @@ import { IPresentationResponse } from '../../types/AixmusicApiTypes';
 import { getPresentation } from './presentationThunks';
 
 interface PresentationState {
-  // TODO: Add types
   presentation: IPresentationResponse,
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
