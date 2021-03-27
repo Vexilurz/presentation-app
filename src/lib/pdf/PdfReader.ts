@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-// @ts-ignore
-// import pdfjsLib from "pdfjs-dist/build/pdf";
+
 
 // @ts-ignore
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
-import { PDFJSStatic } from 'pdfjs-dist'; 
-const pdfjsLib: PDFJSStatic = require('pdfjs-dist');
+import * as pdfjsLib  from 'pdfjs-dist'; 
+
 
 export default function PdfViewer(url: string){
   const canvasRef = useRef();
@@ -47,6 +46,7 @@ export default function PdfViewer(url: string){
     const loadingTask = pdfjsLib.getDocument(url);
       // @ts-ignore
     loadingTask.promise.then(loadedPdf => {
+        // @ts-ignore
       setPdfRef(loadedPdf);
       // @ts-ignore
     }, function (reason) {
