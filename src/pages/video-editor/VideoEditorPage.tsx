@@ -55,7 +55,7 @@ export const VideoEditorPage = (props: Props) => {
           />
         </Grid>
         <Grid item md={9}>
-          <PdfViewer url={'http://www.africau.edu/images/default/sample.pdf'}/>
+          {PdfViewer('http://www.africau.edu/images/default/sample.pdf')}
         </Grid>
       </Grid>
     </div>

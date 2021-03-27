@@ -11,7 +11,6 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
     "@types/jest": "^26.0.21",
-    "@types/node": "^12.20.6",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.2",
     "axios": "^0.21.1",
@@ -52,6 +51,8 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss7-compat": "^2.0.4",
+    "@types/node": "^12.20.7",
+    "@types/pdfjs-dist": "^2.7.0",
     "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.7",
     "@types/webpack-env": "^1.16.0",
