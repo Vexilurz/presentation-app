@@ -8,7 +8,6 @@ import * as pdfjsLib  from 'pdfjs-dist';
 
 
 export default function PdfViewer(url: string){
-  const canvasRef = useRef();
   pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
   const [pdfRef, setPdfRef] = useState();
@@ -20,7 +19,7 @@ export default function PdfViewer(url: string){
     // @ts-ignore
     pdf && pdf.getPage(pageNum).then(function(page) {
       const viewport = page.getViewport({scale: 1.5});
-      const canvas = canvasRef.current;
+      const canvas = document.createElement('canvas');
       // @ts-ignore
       canvas.height = viewport.height;
       // @ts-ignore
@@ -32,8 +31,10 @@ export default function PdfViewer(url: string){
       };
       page.render(renderContext);
 
+      const tmp = canvas.toDataURL('image/png');
+      console.log(tmp)
       // @ts-ignore
-      data.push(canvas.toDataURL('image/png'))
+      data.push(tmp)      
       console.log(data.length + ' page(s) loaded in data')
     });   
   }, [pdfRef]);
@@ -57,6 +58,8 @@ export default function PdfViewer(url: string){
   // const nextPage = () => pdfRef && currentPage < pdfRef.numPages && setCurrentPage(currentPage + 1);
   // const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
+  // @ts-ignore
+  console.log(data);
   // @ts-ignore
   return data;
 }

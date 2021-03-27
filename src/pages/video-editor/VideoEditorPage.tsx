@@ -46,6 +46,8 @@ export const VideoEditorPage = (props: Props) => {
 
   let { presentationUrl } = useParams<ParamTypes>();
 
+  const data = PdfViewer('http://www.africau.edu/images/default/sample.pdf');
+
   return (
     <div className={classes.root}>
       <Grid container className={classes.grid}>
@@ -55,7 +57,7 @@ export const VideoEditorPage = (props: Props) => {
           />
         </Grid>
         <Grid item md={9}>
-          {PdfViewer('http://www.africau.edu/images/default/sample.pdf')}
+          {data}
         </Grid>
       </Grid>
     </div>
