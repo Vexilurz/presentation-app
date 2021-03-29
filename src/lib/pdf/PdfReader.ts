@@ -5,17 +5,30 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
 import * as pdfjsLib  from 'pdfjs-dist'; 
+import { useAppDispatch } from '../../redux/store';
+import { createSlide } from '../../redux/presentation/presentationThunks';
+import { AixmusicApi } from '../aixmusic-api/AixmusicApi';
 
+// @ts-ignore
+function getCanvasBlob(canvas) {
+  return new Promise(function(resolve, reject) {
+    // @ts-ignore
+    canvas.toBlob(function(blob) {
+      resolve(blob)
+    })
+  })
+}
 
-export default function PdfViewer(data: Uint8Array){
+export default function PdfReader(data: Uint8Array, presentationUrl: string){
   pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+  const api = AixmusicApi.getInstance();
 
-  const [pdfRef, setPdfRef] = useState();
-  const [currentPage, setCurrentPage] = useState(1);
   // @ts-ignore
-  let images = [];
-
-  const renderPage = useCallback((pageNum, pdf=pdfRef) => {
+  let pdfRef;
+  let currentPage = 1;
+  // @ts-ignore
+  const renderPage = (pageNum, pdf) => {
+    console.log(`pageNum ${pageNum}`)
     // @ts-ignore
     pdf && pdf.getPage(pageNum).then(function(page) {
       const viewport = page.getViewport({scale: 1.5});
@@ -29,37 +42,33 @@ export default function PdfViewer(data: Uint8Array){
         canvasContext: canvas.getContext('2d'),
         viewport: viewport
       };
+      // TODO: render not working
       page.render(renderContext);
 
-      const tmp = canvas.toDataURL('image/png');
-      console.log(tmp)
-      // @ts-ignore
-      images.push(tmp)      
-      console.log(images.length + ' page(s) loaded in images')
-    });   
-  }, [pdfRef]);
+      // debug:
+      const image = canvas.toDataURL('image/png');
+      console.log(image);
 
-  useEffect(() => {
-    renderPage(currentPage, pdfRef);
-  }, [pdfRef, currentPage, renderPage]);
-
-  useEffect(() => {
-    const loadingTask = pdfjsLib.getDocument(data);
-      // @ts-ignore
-    loadingTask.promise.then(loadedPdf => {
+      getCanvasBlob(canvas).then((blob) => {
         // @ts-ignore
-      setPdfRef(loadedPdf);
+        api.createSlide(presentationUrl, {audio: new Blob(), duration: 1, order: 1, image: blob});  
+        if (pdf && currentPage < pdf.numPages) {
+          currentPage++;
+          renderPage(currentPage, pdf);
+        };
+      });      
+    });   
+  };
+
+  const loadingTask = pdfjsLib.getDocument(data);
+    // @ts-ignore
+  loadingTask.promise.then(loadedPdf => {
       // @ts-ignore
-    }, function (reason) {
-      console.error(reason);
-    });
-  }, [data]);
-
-  // const nextPage = () => pdfRef && currentPage < pdfRef.numPages && setCurrentPage(currentPage + 1);
-  // const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
-
-  // @ts-ignore
-  console.log(images);
-  // @ts-ignore
-  return images;
+    pdfRef = loadedPdf;
+    // @ts-ignore
+    renderPage(currentPage, pdfRef);
+    // @ts-ignore
+  }, function (reason) {
+    console.error(reason);
+  });
 }

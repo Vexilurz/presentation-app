@@ -39,7 +39,16 @@ export class AixmusicApi extends HttpClient {
   } 
 
   public async createSlide(url: string, dto: ICreateSlideDTO): Promise<ISlideResponse> {
-    return await this.instance.post(`slides/${url}/create`, dto);
+    let formData = new FormData();
+    formData.append('order', dto.order.toString())
+    formData.append('audio', dto.audio)
+    formData.append('image', dto.image, 'image.png')
+    formData.append('duration', dto.duration.toString())
+    return await this.instance.post(`slides/${url}/create`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   }
 
   public async updateSlide(slideID: number, dto: IUpdateSlideDTO): Promise<ISlideResponse> {

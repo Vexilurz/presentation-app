@@ -14,6 +14,8 @@ import Paper from '@material-ui/core/Paper';
 import { useParams } from 'react-router-dom';
 import { SlidesView } from './SlidesView';
 
+const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
+
 interface Props {}
 
 interface ParamTypes {
@@ -42,6 +44,7 @@ export const VideoEditorPage = (props: Props) => {
   // const state = useSelector((state: RootState) => state.presentation);
   // const dispatch = useAppDispatch();
   const classes = useStyles();
+  const state = useSelector((state: RootState) => state.presentation);
 
   let { presentationUrl } = useParams<ParamTypes>();
 
@@ -54,6 +57,7 @@ export const VideoEditorPage = (props: Props) => {
           />
         </Grid>
         <Grid item md={9}>
+        <img src={`${uploadsUrl}${state.selectedSlide.image}`} />
         </Grid>
       </Grid>
     </div>

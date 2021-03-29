@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import PdfViewer from '../../lib/pdf/PdfReader';
+import PdfReader from '../../lib/pdf/PdfReader';
 import { getPresentation } from '../../redux/presentation/presentationThunks';
 import { RootState } from '../../redux/rootReducer';
 import { useAppDispatch } from '../../redux/store';
@@ -18,8 +18,6 @@ export const SlidesView = (props: Props) => {
     dispatch(getPresentation(props.presentationUrl));
   }, []);
 
-  const [fileData, setFileData] = useState(new Uint8Array());
-
   // @ts-ignore
   const handleFile = ({ target }) => {
     const files = Array.from(target.files)    
@@ -28,13 +26,12 @@ export const SlidesView = (props: Props) => {
     fileReader.onload = function() {
       // @ts-ignore
       const typedarray = new Uint8Array(this.result);
-      setFileData(typedarray);
+      PdfReader(typedarray, props.presentationUrl);
     };
     // @ts-ignore
     fileReader.readAsArrayBuffer(files[0]);
   }
 
-  const pdfviewer = PdfViewer(fileData);
   return (
     <div>
       SlidesView component {props.presentationUrl}
@@ -50,8 +47,6 @@ export const SlidesView = (props: Props) => {
         onChange={handleFile}
         accept='application/pdf'
       />
-
-      {pdfviewer}
     </div>
   )
 }
