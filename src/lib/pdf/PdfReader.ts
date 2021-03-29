@@ -7,13 +7,13 @@ import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import * as pdfjsLib  from 'pdfjs-dist'; 
 
 
-export default function PdfViewer(url: string){
+export default function PdfViewer(data: Uint8Array){
   pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
   const [pdfRef, setPdfRef] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   // @ts-ignore
-  let data = [];
+  let images = [];
 
   const renderPage = useCallback((pageNum, pdf=pdfRef) => {
     // @ts-ignore
@@ -34,8 +34,8 @@ export default function PdfViewer(url: string){
       const tmp = canvas.toDataURL('image/png');
       console.log(tmp)
       // @ts-ignore
-      data.push(tmp)      
-      console.log(data.length + ' page(s) loaded in data')
+      images.push(tmp)      
+      console.log(images.length + ' page(s) loaded in images')
     });   
   }, [pdfRef]);
 
@@ -44,7 +44,7 @@ export default function PdfViewer(url: string){
   }, [pdfRef, currentPage, renderPage]);
 
   useEffect(() => {
-    const loadingTask = pdfjsLib.getDocument(url);
+    const loadingTask = pdfjsLib.getDocument(data);
       // @ts-ignore
     loadingTask.promise.then(loadedPdf => {
         // @ts-ignore
@@ -53,13 +53,13 @@ export default function PdfViewer(url: string){
     }, function (reason) {
       console.error(reason);
     });
-  }, [url]);
+  }, [data]);
 
   // const nextPage = () => pdfRef && currentPage < pdfRef.numPages && setCurrentPage(currentPage + 1);
   // const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
 
   // @ts-ignore
-  console.log(data);
+  console.log(images);
   // @ts-ignore
-  return data;
+  return images;
 }

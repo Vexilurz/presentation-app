@@ -13,7 +13,6 @@ import { useAppDispatch } from '../../redux/store';
 import Paper from '@material-ui/core/Paper';
 import { useParams } from 'react-router-dom';
 import { SlidesView } from './SlidesView';
-import PdfViewer from '../../lib/pdf/PdfReader';
 
 interface Props {}
 
@@ -46,8 +45,6 @@ export const VideoEditorPage = (props: Props) => {
 
   let { presentationUrl } = useParams<ParamTypes>();
 
-  const data = PdfViewer('http://www.africau.edu/images/default/sample.pdf');
-
   return (
     <div className={classes.root}>
       <Grid container className={classes.grid}>
@@ -57,7 +54,6 @@ export const VideoEditorPage = (props: Props) => {
           />
         </Grid>
         <Grid item md={9}>
-          {data}
         </Grid>
       </Grid>
     </div>
