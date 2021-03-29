@@ -30,9 +30,11 @@ export default function PdfReader(data: Uint8Array, presentationUrl: string){
   const renderPage = (pageNum, pdf) => {
     console.log(`pageNum ${pageNum}`)
     // @ts-ignore
-    pdf && pdf.getPage(pageNum).then(function(page) {
+    pdf && pdf.getPage(pageNum).then(async function(page) {
       const viewport = page.getViewport({scale: 1.5});
-      const canvas = document.createElement('canvas');
+      // const canvas = document.createElement('canvas');
+      const canvas = document.getElementById('canvas');
+      console.log(canvas)
       // @ts-ignore
       canvas.height = viewport.height;
       // @ts-ignore
@@ -43,15 +45,17 @@ export default function PdfReader(data: Uint8Array, presentationUrl: string){
         viewport: viewport
       };
       // TODO: render not working
-      page.render(renderContext);
+      const renderTask =  page.render(renderContext);
+      await renderTask.promise;
 
       // debug:
-      const image = canvas.toDataURL('image/png');
+       // @ts-ignore
+      const image = canvas?.toDataURL('image/png');
       console.log(image);
 
-      getCanvasBlob(canvas).then((blob) => {
+      getCanvasBlob(canvas).then(async (blob) => {
         // @ts-ignore
-        api.createSlide(presentationUrl, {audio: new Blob(), duration: 1, order: 1, image: blob});  
+        await api.createSlide(presentationUrl, {audio: null, duration: 1, order: 1, image: blob});  
         if (pdf && currentPage < pdf.numPages) {
           currentPage++;
           renderPage(currentPage, pdf);

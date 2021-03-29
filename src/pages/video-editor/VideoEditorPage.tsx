@@ -19,7 +19,7 @@ const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
 interface Props {}
 
 interface ParamTypes {
-  presentationUrl: string
+  presentationUrl: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,9 +32,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     sidebar: {
       height: '100%',
+      overflowX: 'scroll',
       backgroundColor: theme.palette.primary.light,
       whiteSpace: 'normal',
-      wordBreak: 'break-all'
+      wordBreak: 'break-all',
     },
   })
 );
@@ -52,12 +53,11 @@ export const VideoEditorPage = (props: Props) => {
     <div className={classes.root}>
       <Grid container className={classes.grid}>
         <Grid item md={3} className={classes.sidebar}>
-          <SlidesView 
-            presentationUrl={presentationUrl}
-          />
+          <SlidesView presentationUrl={presentationUrl} />
         </Grid>
         <Grid item md={9}>
-        <img src={`${uploadsUrl}${state.selectedSlide.image}`} />
+          <img src={`${uploadsUrl}${state.selectedSlide.image}`} />
+          <canvas id="canvas"></canvas>
         </Grid>
       </Grid>
     </div>
