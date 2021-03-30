@@ -44,7 +44,6 @@ export default function PdfReader(data: Uint8Array, presentationUrl: string){
         canvasContext: canvas.getContext('2d'),
         viewport: viewport
       };
-      // TODO: render not working
       const renderTask =  page.render(renderContext);
       await renderTask.promise;
 

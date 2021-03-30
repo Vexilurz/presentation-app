@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { getPresentation } from '../../redux/presentation/presentationThunks';
+import { deleteSlide, getPresentation } from '../../redux/presentation/presentationThunks';
 import { RootState } from '../../redux/rootReducer';
 import { useAppDispatch } from '../../redux/store';
 import Paper from '@material-ui/core/Paper';
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const VideoEditorPage = (props: Props) => {
   const url = 'test';
   // const state = useSelector((state: RootState) => state.presentation);
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const classes = useStyles();
   const state = useSelector((state: RootState) => state.presentation);
 
@@ -56,8 +56,16 @@ export const VideoEditorPage = (props: Props) => {
           <SlidesView presentationUrl={presentationUrl} />
         </Grid>
         <Grid item md={9}>
+          {`Selected slide ID: ${state.selectedSlide.id}`}
+          <button onClick={()=>{
+            dispatch(deleteSlide(state.selectedSlide.id))
+          }}>
+            Delete
+          </button>
+          <br></br>
           <img src={`${uploadsUrl}${state.selectedSlide.image}`} />
-          <canvas id="canvas"></canvas>
+          <br></br>
+          <canvas id="canvas" hidden></canvas>
         </Grid>
       </Grid>
     </div>
