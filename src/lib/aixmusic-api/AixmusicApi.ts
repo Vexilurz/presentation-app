@@ -41,7 +41,7 @@ export class AixmusicApi extends HttpClient {
   public async createSlide(url: string, dto: ICreateSlideDTO): Promise<ISlideResponse> {
     let formData = new FormData();
     formData.append('order', dto.order.toString())
-    formData.append('audio', dto.audio)
+    formData.append('audio', dto.audio, 'audio.mp3')
     formData.append('image', dto.image, 'image.png')
     formData.append('duration', dto.duration.toString())
     return await this.instance.post(`slides/${url}/create`, formData, {
@@ -52,7 +52,48 @@ export class AixmusicApi extends HttpClient {
   }
 
   public async updateSlide(slideID: number, dto: IUpdateSlideDTO): Promise<ISlideResponse> {
-    return await this.instance.post(`slide/${slideID}/update`, dto);
+    let formData = new FormData();
+    formData.append('order', dto.order.toString())
+    formData.append('audio', dto.audio, 'audio.mp3')
+    formData.append('image', dto.image, 'image.png')
+    formData.append('duration', dto.duration.toString())
+    return await this.instance.post(`slide/${slideID}/update`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  }
+
+  public async updateSlideImage(slideID: number, image: Blob): Promise<ISlideResponse> {
+    let formData = new FormData();
+    formData.append('image', image, 'image.png')
+    return await this.instance.post(`slide/${slideID}/update`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  }
+
+  public async updateSlideAudio(slideID: number, audio: Blob): Promise<ISlideResponse> {
+    let formData = new FormData();
+    // TODO: append silence file (blob) when blob do not exist
+    formData.append('audio', audio, 'audio.mp3')
+    // TODO: formData.append('duration', ???)
+    return await this.instance.post(`slide/${slideID}/update`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  }
+
+  public async updateSlideOrder(slideID: number, order: number): Promise<ISlideResponse> {
+    let formData = new FormData();
+    formData.append('order', order.toString())
+    return await this.instance.post(`slide/${slideID}/update`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   }
 
   public async deleteSlide(slideID: number): Promise<string> {
