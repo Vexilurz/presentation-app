@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import PdfReader from '../../lib/pdf/PdfReader';
 import { getPresentation } from '../../redux/presentation/presentationThunks';
 import { RootState } from '../../redux/rootReducer';
@@ -12,11 +13,12 @@ interface Props {
 
 export const SlidesView = (props: Props) => {
   const dispatch = useAppDispatch();
+  const history = useHistory();
   const state = useSelector((state: RootState) => state.presentation);
 
   useEffect(() => {
     dispatch(getPresentation(props.presentationUrl));
-  }, []);
+  }, [history]);
 
   // @ts-ignore
   const handleFile = ({ target }) => {

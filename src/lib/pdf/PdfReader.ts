@@ -28,13 +28,12 @@ export default function PdfReader(data: Uint8Array, presentationUrl: string){
   let currentPage = 1;
   // @ts-ignore
   const renderPage = (pageNum, pdf) => {
-    console.log(`pageNum ${pageNum}`)
     // @ts-ignore
     pdf && pdf.getPage(pageNum).then(async function(page) {
       const viewport = page.getViewport({scale: 1.5});
-      // const canvas = document.createElement('canvas');
-      const canvas = document.getElementById('canvas');
-      console.log(canvas)
+      const canvas = document.createElement('canvas');
+      // const canvas = document.getElementById('canvas');
+      // console.log(canvas)
       // @ts-ignore
       canvas.height = viewport.height;
       // @ts-ignore
@@ -49,8 +48,7 @@ export default function PdfReader(data: Uint8Array, presentationUrl: string){
 
       // debug:
        // @ts-ignore
-      const image = canvas?.toDataURL('image/png');
-      console.log(image);
+      // const image = canvas?.toDataURL('image/png');
 
       getCanvasBlob(canvas).then(async (blob) => {
         // @ts-ignore

@@ -11,7 +11,7 @@ import { deleteSlide, getPresentation } from '../../redux/presentation/presentat
 import { RootState } from '../../redux/rootReducer';
 import { useAppDispatch } from '../../redux/store';
 import Paper from '@material-ui/core/Paper';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { SlidesView } from './SlidesView';
 
 const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
@@ -44,11 +44,12 @@ export const VideoEditorPage = (props: Props) => {
   const url = 'test';
   // const state = useSelector((state: RootState) => state.presentation);
   const dispatch = useAppDispatch();
+  const history = useHistory();
   const classes = useStyles();
   const state = useSelector((state: RootState) => state.presentation);
 
   let { presentationUrl } = useParams<ParamTypes>();
-
+  
   return (
     <div className={classes.root}>
       <Grid container className={classes.grid}>
@@ -62,10 +63,14 @@ export const VideoEditorPage = (props: Props) => {
           }}>
             Delete
           </button>
+          {/* <button onClick={()=>{
+            history.push(`/editor/${presentationUrl}`);            
+          }}>
+            test
+          </button> */}
           <br></br>
           <img src={`${uploadsUrl}${state.selectedSlide.image}`} />
           <br></br>
-          <canvas id="canvas" hidden></canvas>
         </Grid>
       </Grid>
     </div>

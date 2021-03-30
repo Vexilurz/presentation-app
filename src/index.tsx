@@ -11,7 +11,9 @@ function render() {
   ReactDOM.render(
     <React.StrictMode>
       <Provider store={store}>
-        <Router>
+        <Router
+          forceRefresh={true}
+        >
           <App />
         </Router>
       </Provider>
