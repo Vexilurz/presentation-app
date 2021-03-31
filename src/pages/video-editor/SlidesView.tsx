@@ -31,20 +31,6 @@ export const SlidesView = (props: Props) => {
     dispatch(getPresentation(props.presentationUrl));
   }, [history]);
 
-  // @ts-ignore
-  const handleFile = ({ target }) => {
-    const files = Array.from(target.files)    
-    const fileReader = new FileReader();  
-
-    fileReader.onload = function() {
-      // @ts-ignore
-      const typedarray = new Uint8Array(this.result);
-      PdfReader(typedarray, props.presentationUrl);
-    };
-    // @ts-ignore
-    fileReader.readAsArrayBuffer(files[0]);
-  }
-
   return (
     <div className={classes.root}>
       SlidesView component {props.presentationUrl}
@@ -54,12 +40,6 @@ export const SlidesView = (props: Props) => {
           <SlidePreview slide={slide} />
         ))
       }
-
-      <input
-        type="file"
-        onChange={handleFile}
-        accept='application/pdf'
-      />
     </div>
   )
 }

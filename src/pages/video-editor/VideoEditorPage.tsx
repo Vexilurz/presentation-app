@@ -110,7 +110,7 @@ export const VideoEditorPage = (props: Props) => {
       <Grid container className={classes.grid}>
         <Grid item md={3} className={classes.sidebar}>
           <SlidesView presentationUrl={presentationUrl} />
-          <SlidesViewBottomRow />
+          <SlidesViewBottomRow presentationUrl={presentationUrl} />
         </Grid>
         <Grid item md={9} className={classes.workspace}>
           {`Selected slide ID: ${state.selectedSlide.id}`}
