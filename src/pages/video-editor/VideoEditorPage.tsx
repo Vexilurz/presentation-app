@@ -7,7 +7,10 @@ import {
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { deleteSlide, getPresentation } from '../../redux/presentation/presentationThunks';
+import {
+  deleteSlide,
+  getPresentation,
+} from '../../redux/presentation/presentationThunks';
 import { RootState } from '../../redux/rootReducer';
 import { useAppDispatch } from '../../redux/store';
 import Paper from '@material-ui/core/Paper';
@@ -17,6 +20,7 @@ import { SlidesView } from './SlidesView';
 import MicRecorder from 'mic-recorder-to-mp3';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import EditorBar from './EditorBar';
+import { SlidesViewBottomRow } from './SlidesViewBottomRow';
 
 const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
@@ -37,8 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
     },
     sidebar: {
-      height: '100%',
-      overflowY: 'scroll',
+      maxHeight: '100%',
+      display: 'flex',
+      flexDirection: 'column',
       backgroundColor: theme.palette.primary.light,
       whiteSpace: 'normal',
       wordBreak: 'break-all',
@@ -46,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
     workspace: {
       overflowY: 'scroll',
       height: '100%',
-    }
+    },
   })
 );
 
@@ -63,8 +68,9 @@ export const VideoEditorPage = (props: Props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
 
-  useEffect(()=>{
-    navigator.getUserMedia({ audio: true },
+  useEffect(() => {
+    navigator.getUserMedia(
+      { audio: true },
       () => {
         console.log('Permission Granted');
         setIsBlocked(false);
@@ -72,46 +78,47 @@ export const VideoEditorPage = (props: Props) => {
       () => {
         console.log('Permission Denied');
         setIsBlocked(true);
-      },
+      }
     );
-  },[]);
+  }, []);
 
   const startRec = () => {
     if (isBlocked) {
       console.log('Permission Denied');
     } else {
-      Mp3Recorder
-        .start()
+      Mp3Recorder.start()
         .then(() => {
           setIsRecording(true);
-          // @ts-ignore
-        }).catch((e) => console.error(e));
+        })
+        .catch((e: any) => console.error(e));
     }
-  }
+  };
 
   const stopRec = () => {
-    Mp3Recorder
-    .stop()
-    .getMp3()
-    // @ts-ignore
-    .then(async ([buffer, blob]) => {
-      await api.updateSlideAudio(state.selectedSlide.id, blob);
-      setIsRecording(false);
+    Mp3Recorder.stop()
+      .getMp3()
       // @ts-ignore
-    }).catch((e) => console.log(e));
-  }
-  
+      .then(async ([buffer, blob]) => {
+        await api.updateSlideAudio(state.selectedSlide.id, blob);
+        setIsRecording(false);
+      })
+      .catch((e: any) => console.log(e));
+  };
+
   return (
     <div className={classes.root}>
       <Grid container className={classes.grid}>
         <Grid item md={3} className={classes.sidebar}>
           <SlidesView presentationUrl={presentationUrl} />
+          <SlidesViewBottomRow />
         </Grid>
         <Grid item md={9} className={classes.workspace}>
           {`Selected slide ID: ${state.selectedSlide.id}`}
-          <button onClick={()=>{
-            dispatch(deleteSlide(state.selectedSlide.id))
-          }}>
+          <button
+            onClick={() => {
+              dispatch(deleteSlide(state.selectedSlide.id));
+            }}
+          >
             Delete
           </button>
           {/* <button onClick={()=>{
@@ -120,17 +127,20 @@ export const VideoEditorPage = (props: Props) => {
             test
           </button> */}
           <br></br>
-            <button onClick={startRec} disabled={isRecording}>
-              Record
-            </button>
-            <button onClick={stopRec} disabled={!isRecording}>
-              Stop
-            </button>
-            <audio src={`${uploadsUrl}${state.selectedSlide.audio}`} controls={true} />
+          <button onClick={startRec} disabled={isRecording}>
+            Record
+          </button>
+          <button onClick={stopRec} disabled={!isRecording}>
+            Stop
+          </button>
+          <audio
+            src={`${uploadsUrl}${state.selectedSlide.audio}`}
+            controls={true}
+          />
           <br></br>
           <img src={`${uploadsUrl}${state.selectedSlide.image}`} />
           <br></br>
-          <EditorBar/>
+          <EditorBar />
         </Grid>
       </Grid>
     </div>
