@@ -41,7 +41,8 @@ export class AixmusicApi extends HttpClient {
   public async createSlide(url: string, dto: ICreateSlideDTO): Promise<ISlideResponse> {
     let formData = new FormData();
     formData.append('order', dto.order.toString())
-    formData.append('audio', dto.audio, 'audio.mp3')
+    if (dto.audio)
+      formData.append('audio', dto.audio, 'audio.mp3')
     formData.append('image', dto.image, 'image.png')
     formData.append('duration', dto.duration.toString())
     return await this.instance.post(`slides/${url}/create`, formData, {

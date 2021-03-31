@@ -16,6 +16,7 @@ import { SlidesView } from './SlidesView';
 // @ts-ignore
 import MicRecorder from 'mic-recorder-to-mp3';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
+import EditorBar from './EditorBar';
 
 const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
@@ -37,11 +38,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     sidebar: {
       height: '100%',
-      overflowX: 'scroll',
+      overflowY: 'scroll',
       backgroundColor: theme.palette.primary.light,
       whiteSpace: 'normal',
       wordBreak: 'break-all',
     },
+    workspace: {
+      overflowY: 'scroll',
+      height: '100%',
+    }
   })
 );
 
@@ -102,7 +107,7 @@ export const VideoEditorPage = (props: Props) => {
         <Grid item md={3} className={classes.sidebar}>
           <SlidesView presentationUrl={presentationUrl} />
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} className={classes.workspace}>
           {`Selected slide ID: ${state.selectedSlide.id}`}
           <button onClick={()=>{
             dispatch(deleteSlide(state.selectedSlide.id))
@@ -125,6 +130,7 @@ export const VideoEditorPage = (props: Props) => {
           <br></br>
           <img src={`${uploadsUrl}${state.selectedSlide.image}`} />
           <br></br>
+          <EditorBar/>
         </Grid>
       </Grid>
     </div>
