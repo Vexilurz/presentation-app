@@ -87,6 +87,14 @@ export class AixmusicApi extends HttpClient {
     });
   }
 
+  public async deleteSlideAudio(slideID: number): Promise<ISlideResponse> {
+    return await this.instance.post(`slide/${slideID}/update`, {audio: "DELETE"});
+  }
+
+  public async deleteSlideImage(slideID: number): Promise<ISlideResponse> {
+    return await this.instance.post(`slide/${slideID}/update`, {image: "DELETE"});
+  }
+
   public async updateSlideOrder(slideID: number, order: number): Promise<ISlideResponse> {
     let formData = new FormData();
     formData.append('order', order.toString())

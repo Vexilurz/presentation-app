@@ -76,26 +76,12 @@ export const VideoEditorPage = (props: Props) => {
           >
             Delete
           </button>
-          {/* <button onClick={()=>{
-            history.push(`/editor/${presentationUrl}`);            
-          }}>
-            test
-          </button> */}
-          {/* <br></br>
-          <button onClick={startRec} disabled={isRecording}>
-            Record
-          </button>
-          <button onClick={stopRec} disabled={!isRecording}>
-            Stop
-          </button>
-          <audio
-            src={`${uploadsUrl}${state.selectedSlide.audio}`}
-            controls={true}
-          />
-          <br></br> */}
           <img src={`${uploadsUrl}${state.selectedSlide.image}`} />
           <br></br>
-          <EditorBar />
+          <EditorBar 
+            audioUrl={`${uploadsUrl}${state.selectedSlide.audio}`}
+            slideId={state.selectedSlide.id}
+          />
         </Grid>
       </Grid>
     </div>

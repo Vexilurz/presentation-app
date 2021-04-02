@@ -37,7 +37,7 @@ export const SlidesView = (props: Props) => {
 
       {state.presentation.slides?.map((slide) => 
         (
-          <SlidePreview slide={slide} />
+          <SlidePreview slide={slide} key={slide.id} />
         ))
       }
     </div>
