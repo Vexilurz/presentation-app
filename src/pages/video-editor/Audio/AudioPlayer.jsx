@@ -22,10 +22,10 @@ function AudioPlayer(props) {
       {/* <Song songName="Instant Crush" songArtist="Daft Punk ft. Julian Casablancas" /> */}
       <div className="controls">
         <Bar curTime={curTime} duration={duration} onTimeUpdate={(time) => setClickedTime(time)}/>
-        {playing ? 
+        {/* {playing ? 
           <Pause handleClick={() => setPlaying(false)} /> :
           <Play handleClick={() => setPlaying(true)} />
-        }
+        } */}
       </div>
     </div>
   );

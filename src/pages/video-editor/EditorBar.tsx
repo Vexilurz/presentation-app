@@ -20,6 +20,7 @@ import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
 import AudioPlayer from './Audio/AudioPlayer';
+import useAudioPlayer from './Audio/useAudioPlayer';
 
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 const api = AixmusicApi.getInstance();
@@ -51,11 +52,8 @@ export default function EditorBar(props: Props): ReactElement {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
-  // let audio = new Audio(props.audioUrl);
-
   const [isRecording, setIsRecording] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     navigator.getUserMedia(
@@ -103,21 +101,17 @@ export default function EditorBar(props: Props): ReactElement {
       startRec();
   }
 
-  const playIcon = isPlaying ? <StopIcon /> : <PlayArrowIcon />;
-  const playLabel = isPlaying ? "Stop" : "Play";
+  const { playing, setPlaying } = useAudioPlayer();
+  const playIcon = playing ? <PauseIcon /> : <PlayArrowIcon />;
+  const playLabel = playing ? "Pause" : "Play";
   const onPlayClick = () => {
-    if (isPlaying) {
-      // audio.pause();
-      // audio.currentTime=0;
-    } else {
-      // audio.play();
-    }      
-    setIsPlaying(!isPlaying)
+    setPlaying(!playing);     
   }
 
   const onDeleteClick = () => {
     api.deleteSlideAudio(props.slideId);
   }
+
 
   return (
     <Paper variant="outlined" className={classes.root}>
@@ -125,8 +119,7 @@ export default function EditorBar(props: Props): ReactElement {
         value={value}
         onChange={(event, newValue) => {
           setValue(newValue);
-        }}
-      
+        }}      
       >
         <BottomNavigationAction 
           label={recLabel} 
