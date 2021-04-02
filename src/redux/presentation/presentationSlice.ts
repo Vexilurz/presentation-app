@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IPresentationResponse, ISlideResponse } from '../../types/AixmusicApiTypes';
-import { getPresentation, updateSlideAudio } from './presentationThunks';
+import { deleteSlideAudio, getPresentation, updateSlideAudio } from './presentationThunks';
 
 interface PresentationState {
   presentation: IPresentationResponse,
-  selectedSlide: ISlideResponse,
+  selectedSlideId: number,
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: PresentationState = {
   presentation: {} as IPresentationResponse,
-  selectedSlide: {} as ISlideResponse,
+  selectedSlideId: -1,
   status: 'idle'
 };
 
@@ -18,8 +18,8 @@ const presentationSlice = createSlice({
   name: 'presentation',
   initialState,
   reducers: {
-    setSelectedSlide: (state: PresentationState, action: PayloadAction<ISlideResponse>) => {
-      state.selectedSlide = action.payload;
+    setSelectedSlideId: (state: PresentationState, action: PayloadAction<number>) => {
+      state.selectedSlideId = action.payload;
     },
   },
   // Thunk reducers
@@ -34,7 +34,7 @@ const presentationSlice = createSlice({
     builder.addCase(getPresentation.rejected, (state, err) => {
       state.status = 'failed';
     });
-    builder.addCase(updateSlideAudio.fulfilled, (state, action) => {
+    builder.addCase(updateSlideAudio.fulfilled || deleteSlideAudio.fulfilled, (state, action) => {
       const { payload } = action;
       let slides: ISlideResponse[] = [] as ISlideResponse[];
       // @ts-ignore
@@ -44,6 +44,6 @@ const presentationSlice = createSlice({
   },
 });
 
-export const { setSelectedSlide } = presentationSlice.actions;
+export const { setSelectedSlideId } = presentationSlice.actions;
 
 export default presentationSlice.reducer;

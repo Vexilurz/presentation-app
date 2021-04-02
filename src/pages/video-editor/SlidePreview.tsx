@@ -1,5 +1,5 @@
 import React from 'react'
-import { setSelectedSlide } from '../../redux/presentation/presentationSlice';
+import { setSelectedSlideId } from '../../redux/presentation/presentationSlice';
 import { useAppDispatch } from '../../redux/store';
 import { ISlideResponse } from '../../types/AixmusicApiTypes'
 
@@ -17,7 +17,7 @@ export const SlidePreview = (props: Props) => {
       <br></br>      
       <img src={`${uploadsUrl}${props.slide.image}`} width="30%" height="30%" 
         onClick={()=>{          
-          dispatch(setSelectedSlide(props.slide))
+          dispatch(setSelectedSlideId(props.slide.id))
         }}
       />
     </div>

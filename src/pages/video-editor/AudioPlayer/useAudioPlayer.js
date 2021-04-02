@@ -14,11 +14,16 @@ function useAudioPlayer() {
       setDuration(audio.duration);
       setCurTime(audio.currentTime);
     }
+    const setNullAudioData = () => {
+      setDuration(0);
+      setCurTime(0);
+    }
 
     const setAudioTime = () => setCurTime(audio.currentTime);
 
     // DOM listeners: update React state on DOM events
     audio.addEventListener("loadeddata", setAudioData);
+    audio.addEventListener("error", setNullAudioData);
 
     audio.addEventListener("timeupdate", setAudioTime);
 
@@ -33,6 +38,7 @@ function useAudioPlayer() {
     // effect cleanup
     return () => {
       audio.removeEventListener("loadeddata", setAudioData);
+      audio.removeEventListener("error", setNullAudioData);
       audio.removeEventListener("timeupdate", setAudioTime);
     }
   });

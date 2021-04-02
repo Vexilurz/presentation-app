@@ -31,8 +31,6 @@ const api = AixmusicApi.getInstance();
 interface Props {
   audioUrl: string;
   slideId: number;
-  recComplete?(): void;
-  recDeleted?(): void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -93,10 +91,9 @@ export default function EditorBar(props: Props): ReactElement {
       .getMp3()
       // @ts-ignore
       .then(async ([buffer, blob]) => {
-        // await api.updateSlideAudio(state.selectedSlide.id, blob);
-        dispatch(updateSlideAudio({slideID: state.selectedSlide.id, audio: blob}))
+        // await api.updateSlideAudio(state.selectedSlideId, blob);
+        dispatch(updateSlideAudio({slideID: state.selectedSlideId, audio: blob}))
         setIsRecording(false);
-        if (props.recComplete) props.recComplete();
       })
       .catch((e: any) => console.log(e));
   };
@@ -122,7 +119,6 @@ export default function EditorBar(props: Props): ReactElement {
 
   const onDeleteClick = async () => {
     await api.deleteSlideAudio(props.slideId);
-    if (props.recDeleted) props.recDeleted();
   }
 
 
