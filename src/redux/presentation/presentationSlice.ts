@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IPresentationResponse, ISlideResponse } from '../../types/AixmusicApiTypes';
-import { getPresentation } from './presentationThunks';
+import { getPresentation, updateSlideAudio } from './presentationThunks';
 
 interface PresentationState {
   presentation: IPresentationResponse,
@@ -33,6 +33,13 @@ const presentationSlice = createSlice({
     });
     builder.addCase(getPresentation.rejected, (state, err) => {
       state.status = 'failed';
+    });
+    builder.addCase(updateSlideAudio.fulfilled, (state, action) => {
+      const { payload } = action;
+      let slides: ISlideResponse[] = [] as ISlideResponse[];
+      // @ts-ignore
+      slides = state.presentation.slides?.map((slide) => payload.id !== slide.id ? slide : payload);
+      state.presentation.slides = slides;
     });
   },
 });

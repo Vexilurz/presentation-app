@@ -69,6 +69,17 @@ async ( {slideID, dto}: {slideID: number, dto: IUpdateSlideDTO}, { dispatch }) =
   }
 });
 
+export const updateSlideAudio = createAsyncThunk('slide/update/audio', 
+async ( {slideID, audio}: {slideID: number, audio: Blob}, { dispatch }) => {
+  try {
+    const data = await api.updateSlideAudio(slideID, audio);
+    return data;
+  } catch (err) {
+    // Here we can check errors and dispatch some actions if is needed
+    throw err;
+  }
+});
+
 export const deleteSlide = createAsyncThunk('slide/delete', 
 async ( slideID: number, { dispatch }) => {
   try {

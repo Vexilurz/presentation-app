@@ -19,8 +19,11 @@ import MicRecorder from 'mic-recorder-to-mp3';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
-import AudioPlayer from './Audio/AudioPlayer';
-import useAudioPlayer from './Audio/useAudioPlayer';
+import AudioPlayer from './AudioPlayer/AudioPlayer';
+import useAudioPlayer from './AudioPlayer/useAudioPlayer';
+import { ISlideResponse } from '../../types/AixmusicApiTypes';
+import { updateSlideAudio } from '../../redux/presentation/presentationThunks';
+import { useAppDispatch } from '../../redux/store';
 
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 const api = AixmusicApi.getInstance();
@@ -28,6 +31,8 @@ const api = AixmusicApi.getInstance();
 interface Props {
   audioUrl: string;
   slideId: number;
+  recComplete?(): void;
+  recDeleted?(): void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,6 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function EditorBar(props: Props): ReactElement {
+  const dispatch = useAppDispatch();
   const state = useSelector((state: RootState) => state.presentation);
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
@@ -71,8 +77,9 @@ export default function EditorBar(props: Props): ReactElement {
 
   const startRec = () => {
     if (isBlocked) {
-      console.log('Permission Denied');
+      console.log('Recording Permission Denied');
     } else {
+      onDeleteClick();
       Mp3Recorder.start()
         .then(() => {
           setIsRecording(true);
@@ -86,8 +93,10 @@ export default function EditorBar(props: Props): ReactElement {
       .getMp3()
       // @ts-ignore
       .then(async ([buffer, blob]) => {
-        await api.updateSlideAudio(state.selectedSlide.id, blob);
+        // await api.updateSlideAudio(state.selectedSlide.id, blob);
+        dispatch(updateSlideAudio({slideID: state.selectedSlide.id, audio: blob}))
         setIsRecording(false);
+        if (props.recComplete) props.recComplete();
       })
       .catch((e: any) => console.log(e));
   };
@@ -105,11 +114,15 @@ export default function EditorBar(props: Props): ReactElement {
   const playIcon = playing ? <PauseIcon /> : <PlayArrowIcon />;
   const playLabel = playing ? "Pause" : "Play";
   const onPlayClick = () => {
-    setPlaying(!playing);     
+    if (!playing && props.audioUrl)
+      setPlaying(true);     
+    else
+      setPlaying(false);     
   }
 
-  const onDeleteClick = () => {
-    api.deleteSlideAudio(props.slideId);
+  const onDeleteClick = async () => {
+    await api.deleteSlideAudio(props.slideId);
+    if (props.recDeleted) props.recDeleted();
   }
 
 

@@ -58,7 +58,23 @@ export const VideoEditorPage = (props: Props) => {
   const classes = useStyles();
   const state = useSelector((state: RootState) => state.presentation);
 
+  const [audioUrl, setAudioUrl] = 
+    useState(state.selectedSlide.audio ? `${uploadsUrl}${state.selectedSlide.audio}` : '');
+
+  useEffect(()=>{
+    setAudioUrl(state.selectedSlide.audio ? `${uploadsUrl}${state.selectedSlide.audio}` : '')
+  }, [state.selectedSlide.id])
+
   let { presentationUrl } = useParams<ParamTypes>();
+
+  const recComplete = () => {
+    // setAudioUrl(`${uploadsUrl}${presentationUrl}_${state.selectedSlide.id}_audio.mp3`);
+    setAudioUrl(`${uploadsUrl}${state.selectedSlide.audio}`);
+  }
+
+  const recDeleted = () => {
+    setAudioUrl('')
+  }
 
   return (
     <div className={classes.root}>
@@ -68,7 +84,7 @@ export const VideoEditorPage = (props: Props) => {
           <SlidesViewBottomRow presentationUrl={presentationUrl} />
         </Grid>
         <Grid item md={9} className={classes.workspace}>
-          {`Selected slide ID: ${state.selectedSlide.id}`}
+          {`Selected slide ID: ${state.selectedSlide.id}, ${state.selectedSlide.audio}`}
           <button
             onClick={() => {
               dispatch(deleteSlide(state.selectedSlide.id));
@@ -79,8 +95,10 @@ export const VideoEditorPage = (props: Props) => {
           <img src={`${uploadsUrl}${state.selectedSlide.image}`} />
           <br></br>
           <EditorBar 
-            audioUrl={`${uploadsUrl}${state.selectedSlide.audio}`}
+            audioUrl={audioUrl}
             slideId={state.selectedSlide.id}
+            recComplete={recComplete}
+            recDeleted={recDeleted}
           />
         </Grid>
       </Grid>
