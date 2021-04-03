@@ -28,7 +28,7 @@ function SlideImg({ src }: Props): ReactElement {
   const state = useSelector((state: RootState) => state.presentation);
   return (
     <div className={classes.slideImageContainer}>
-      {state.selectedSlide.id ? (
+      {state.selectedSlide?.id ? (
         <img
           src={`${uploadsUrl}${src}`}
           alt=""

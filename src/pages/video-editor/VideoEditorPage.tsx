@@ -22,7 +22,6 @@ import { ISlideResponse } from '../../types/AixmusicApiTypes';
 import { SlideToolbar } from './SlideToolbar';
 import SlideImg from './SlideImg';
 
-
 interface Props {}
 
 interface ParamTypes {
@@ -73,8 +72,12 @@ export const VideoEditorPage = (props: Props) => {
           <SlidesViewBottomRow presentationUrl={presentationUrl} />
         </Grid>
         <Grid item md={9} className={classes.workspace}>
-          <SlideToolbar />
-          <SlideImg src={selectedSlide?.image}/>
+          {state.presentation.id ? (
+            <>
+              <SlideToolbar />
+              <SlideImg src={selectedSlide?.image} />
+            </>
+          ) : null}
         </Grid>
         <EditorBar
           audioUrl={selectedSlide?.audio}

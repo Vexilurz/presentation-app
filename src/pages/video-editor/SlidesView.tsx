@@ -1,5 +1,10 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
-import React, { useEffect, useState } from 'react'
+import {
+  CircularProgress,
+  createStyles,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PdfReader from '../../lib/pdf/PdfReader';
@@ -9,7 +14,7 @@ import { useAppDispatch } from '../../redux/store';
 import { SlidePreview } from './SlidePreview';
 
 interface Props {
-  presentationUrl: string,
+  presentationUrl: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,7 +22,12 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
       overflowY: 'scroll',
-      maxHeight: 'calc(100% - 50px)'
+      maxHeight: 'calc(100% - 50px)',
+      padding: '5px 0',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyItems: 'center',
+      alignItems: 'center',
     },
   })
 );
@@ -31,15 +41,17 @@ export const SlidesView = (props: Props) => {
     dispatch(getPresentation(props.presentationUrl));
   }, [history]);
 
+  const slidePreviewArray = state.presentation.slides?.map((slide) => (
+    <SlidePreview slide={slide} key={slide.id} />
+  ));
+
   return (
     <div className={classes.root}>
-      SlidesView component {props.presentationUrl}
-
-      {state.presentation.slides?.map((slide) => 
-        (
-          <SlidePreview slide={slide} key={slide.id} />
-        ))
-      }
+      {state.status === 'loading' ? (
+        <CircularProgress color="secondary" />
+      ) : (
+        slidePreviewArray
+      )}
     </div>
-  )
-}
+  );
+};
