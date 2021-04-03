@@ -10,7 +10,7 @@ export interface IPresentationResponse {
   createdAt: string,
   updatedAt: string,
   audio: string,
-  slides?: ISlideResponse[], // slides don't exist when creating presentation
+  slides: ISlideResponse[], // slides don't exist when creating presentation
 }
 
 export interface ISlideResponse {

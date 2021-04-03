@@ -28,8 +28,10 @@ import { useAppDispatch } from '../../redux/store';
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 const api = AixmusicApi.getInstance();
 
+const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
+
 interface Props {
-  audioUrl: string;
+  audioUrl?: string;
   slideId: number;
 }
 
@@ -146,7 +148,7 @@ export default function EditorBar(props: Props): ReactElement {
           onClick={onDeleteClick}
         />        
       </BottomNavigation>
-      <AudioPlayer audioUrl={props.audioUrl} />
+      <AudioPlayer audioUrl={`${uploadsUrl}/${props.audioUrl}`} />
     </Paper>
   );
 }

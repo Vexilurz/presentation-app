@@ -1,25 +1,41 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IPresentationResponse, ISlideResponse } from '../../types/AixmusicApiTypes';
-import { deleteSlideAudio, getPresentation, updateSlideAudio } from './presentationThunks';
+import {
+  IPresentationResponse,
+  ISlideResponse,
+} from '../../types/AixmusicApiTypes';
+import {
+  deleteSlide,
+  deleteSlideAudio,
+  getPresentation,
+  updateSlideAudio,
+} from './presentationThunks';
 
 interface PresentationState {
-  presentation: IPresentationResponse,
-  selectedSlideId: number,
+  presentation: IPresentationResponse;
+  selectedSlideId: number;
+  selectedSlide?: ISlideResponse;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: PresentationState = {
   presentation: {} as IPresentationResponse,
   selectedSlideId: -1,
-  status: 'idle'
+  selectedSlide: {} as ISlideResponse,
+  status: 'idle',
 };
 
 const presentationSlice = createSlice({
   name: 'presentation',
   initialState,
   reducers: {
-    setSelectedSlideId: (state: PresentationState, action: PayloadAction<number>) => {
+    setSelectedSlideId: (
+      state: PresentationState,
+      action: PayloadAction<number>
+    ) => {
       state.selectedSlideId = action.payload;
+      state.selectedSlide = state.presentation.slides.find(
+        (slide) => slide.id === state.selectedSlideId
+      );
     },
   },
   // Thunk reducers
@@ -34,13 +50,25 @@ const presentationSlice = createSlice({
     builder.addCase(getPresentation.rejected, (state, err) => {
       state.status = 'failed';
     });
-    builder.addCase(updateSlideAudio.fulfilled || deleteSlideAudio.fulfilled, (state, action) => {
-      const { payload } = action;
-      let slides: ISlideResponse[] = [] as ISlideResponse[];
-      // @ts-ignore
-      slides = state.presentation.slides?.map((slide) => payload.id !== slide.id ? slide : payload);
-      state.presentation.slides = slides;
+    builder.addCase(deleteSlide.fulfilled, (state, action) => {
+      const deletedSlideId = action.payload;
+      state.presentation.slides = state.presentation.slides.filter(
+        (slide) => slide.id !== deletedSlideId
+      );
+      state.selectedSlide = {} as ISlideResponse;
     });
+    builder.addCase(
+      updateSlideAudio.fulfilled || deleteSlideAudio.fulfilled,
+      (state, action) => {
+        const { payload } = action;
+        let slides: ISlideResponse[] = [] as ISlideResponse[];
+        // @ts-ignore
+        slides = state.presentation.slides?.map((slide) =>
+          payload.id !== slide.id ? slide : payload
+        );
+        state.presentation.slides = slides;
+      }
+    );
   },
 });
 

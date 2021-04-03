@@ -19,8 +19,8 @@ import { SlidesView } from './SlidesView';
 import EditorBar from './EditorBar';
 import { SlidesViewBottomRow } from './SlidesViewBottomRow';
 import { ISlideResponse } from '../../types/AixmusicApiTypes';
-
-const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
+import { SlideToolbar } from './SlideToolbar';
+import SlideImg from './SlideImg';
 
 
 interface Props {}
@@ -46,21 +46,22 @@ const useStyles = makeStyles((theme: Theme) =>
       wordBreak: 'break-all',
     },
     workspace: {
-      overflowY: 'scroll',
       height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
     },
   })
 );
 
 export const VideoEditorPage = (props: Props) => {
-  const url = 'test';
-  const dispatch = useAppDispatch();
-  const history = useHistory();
   const classes = useStyles();
   const state = useSelector((state: RootState) => state.presentation);
 
-  const selectedSlide: ISlideResponse | undefined = 
-    state.presentation.slides?.find((slide) => slide.id === state.selectedSlideId)
+  const selectedSlide:
+    | ISlideResponse
+    | undefined = state.presentation.slides?.find(
+    (slide) => slide.id === state.selectedSlideId
+  );
 
   let { presentationUrl } = useParams<ParamTypes>();
 
@@ -72,21 +73,13 @@ export const VideoEditorPage = (props: Props) => {
           <SlidesViewBottomRow presentationUrl={presentationUrl} />
         </Grid>
         <Grid item md={9} className={classes.workspace}>
-          {`Selected slide ID: ${state.selectedSlideId}, ${selectedSlide?.audio}`}
-          <button
-            onClick={() => {
-              dispatch(deleteSlide(state.selectedSlideId));
-            }}
-          >
-            Delete
-          </button>
-          <img src={`${uploadsUrl}${selectedSlide?.image}`} />
-          <br></br>
-          <EditorBar 
-            audioUrl={`${uploadsUrl}${selectedSlide?.audio}`}
-            slideId={state.selectedSlideId}
-          />
+          <SlideToolbar />
+          <SlideImg src={selectedSlide?.image}/>
         </Grid>
+        <EditorBar
+          audioUrl={selectedSlide?.audio}
+          slideId={state.selectedSlideId}
+        />
       </Grid>
     </div>
   );

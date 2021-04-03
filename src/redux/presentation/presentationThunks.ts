@@ -95,7 +95,7 @@ export const deleteSlide = createAsyncThunk('slide/delete',
 async ( slideID: number, { dispatch }) => {
   try {
     const data = await api.deleteSlide(slideID);
-    return data;
+    return slideID;
   } catch (err) {
     // Here we can check errors and dispatch some actions if is needed
     throw err;
