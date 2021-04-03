@@ -14,6 +14,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { deleteSlide } from '../../redux/presentation/presentationThunks';
 
+// @ts-ignore
+import Crunker from 'crunker';
+import { extractAudioUrls } from '../../lib/audio-concat';
+import axios from 'axios';
+
 interface Props {}
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,6 +39,18 @@ export const SlideToolbar = (props: Props) => {
   const state = useSelector((state: RootState) => state.presentation);
   const dispatch = useDispatch();
   const classes = useStyles();
+
+  const handleUpload = async () => {
+    const crunker = new Crunker();
+
+    // const audioUrls = extractAudioUrls(state.presentation);
+
+    // let buffers = await crunker.fetchAudio(...audioUrls);
+    // let concated = await crunker.concatAudio(buffers);
+    // let output = await crunker.export(concated, 'audio/mp3');
+
+  };
+
   return (
     <Toolbar className={classes.root}>
       <Typography variant="h6" className={classes.title}>
@@ -44,6 +61,7 @@ export const SlideToolbar = (props: Props) => {
         color="default"
         className={classes.button}
         startIcon={<CloudUploadIcon />}
+        onClick={handleUpload}
       >
         Upload
       </Button>
