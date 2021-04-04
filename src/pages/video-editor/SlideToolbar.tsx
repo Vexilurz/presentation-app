@@ -1,5 +1,4 @@
 import {
-  AppBar,
   Button,
   createStyles,
   makeStyles,
@@ -17,7 +16,7 @@ import { deleteSlide } from '../../redux/presentation/presentationThunks';
 // @ts-ignore
 import Crunker from 'crunker';
 import { extractAudioUrls } from '../../lib/audio-concat';
-import axios from 'axios';
+import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 
 interface Props {}
 
@@ -41,14 +40,19 @@ export const SlideToolbar = (props: Props) => {
   const classes = useStyles();
 
   const handleUpload = async () => {
+    // TODO: MOVE TO REDUX
     const crunker = new Crunker();
 
-    // const audioUrls = extractAudioUrls(state.presentation);
+    const audioUrls = extractAudioUrls(state.presentation);
 
-    // let buffers = await crunker.fetchAudio(...audioUrls);
-    // let concated = await crunker.concatAudio(buffers);
-    // let output = await crunker.export(concated, 'audio/mp3');
-
+    let buffers = await crunker.fetchAudio(...audioUrls);
+    let concated = await crunker.concatAudio(buffers);
+    let output = await crunker.export(concated, 'audio/mp3');
+    const api = AixmusicApi.getInstance();
+    const res = await api.updatePresentation(state.presentation.url, {
+      audio: output.blob
+    });
+    console.log(res);
   };
 
   return (

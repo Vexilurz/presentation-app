@@ -15,7 +15,7 @@ export const AppRoutes = (props: Props) => {
       <Route path="/editor/:presentationUrl?">
         <VideoEditorPage />
       </Route>
-      <Route path="/player">
+      <Route path="/player/:presentationUrl?">
         <VideoPlayerPage />
       </Route>
       <Route path="*">

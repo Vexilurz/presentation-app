@@ -3,9 +3,9 @@ export interface ICreatePresentationDTO {
 }
 
 export interface IUpdatePresentationDTO {
-  title: string;
-  description: string;
-  audio: Blob;
+  title?: string;
+  description?: string;
+  audio?: Blob;
 }
 
 export interface ICreateSlideDTO {

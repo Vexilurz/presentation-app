@@ -6,12 +6,10 @@ import {
   Paper,
   Theme,
 } from '@material-ui/core';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import StopIcon from '@material-ui/icons/Stop';
 import PauseIcon from '@material-ui/icons/Pause';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import DeleteIcon from '@material-ui/icons/Delete';
 // @ts-ignore
@@ -19,16 +17,13 @@ import MicRecorder from 'mic-recorder-to-mp3';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
-import AudioPlayer from './AudioPlayer/AudioPlayer';
-import useAudioPlayer from './AudioPlayer/useAudioPlayer';
-import { ISlideResponse } from '../../types/AixmusicApiTypes';
 import { updateSlideAudio } from '../../redux/presentation/presentationThunks';
 import { useAppDispatch } from '../../redux/store';
+import { getAssetsUrl } from '../../lib/assests-helper';
+import ReactAudioPlayer from 'react-audio-player';
 
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 const api = AixmusicApi.getInstance();
-
-const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
 
 interface Props {
   audioUrl?: string;
@@ -47,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       allignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
     },
   })
 );
@@ -60,6 +55,8 @@ export default function EditorBar(props: Props): ReactElement {
 
   const [isRecording, setIsRecording] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
+
+  let audioEl = React.createRef<HTMLAudioElement>();
 
   useEffect(() => {
     navigator.getUserMedia(
@@ -94,35 +91,52 @@ export default function EditorBar(props: Props): ReactElement {
       // @ts-ignore
       .then(async ([buffer, blob]) => {
         // await api.updateSlideAudio(state.selectedSlideId, blob);
-        dispatch(updateSlideAudio({slideID: state.selectedSlideId, audio: blob}))
+        dispatch(
+          updateSlideAudio({ slideID: state.selectedSlideId, audio: blob })
+        );
         setIsRecording(false);
       })
       .catch((e: any) => console.log(e));
   };
 
   const recIcon = isRecording ? <StopIcon /> : <FiberManualRecordIcon />;
-  const recLabel = isRecording ? "Stop" : "Record";
+  const recLabel = isRecording ? 'Stop' : 'Record';
   const onRecClick = () => {
-    if (isRecording) 
-      stopRec(); 
-    else 
-      startRec();
-  }
+    if (isRecording) stopRec();
+    else startRec();
+  };
 
-  const { playing, setPlaying } = useAudioPlayer();
+  const [playing, setPlaying] = useState(false);
   const playIcon = playing ? <PauseIcon /> : <PlayArrowIcon />;
-  const playLabel = playing ? "Pause" : "Play";
+
+  const [playLabel, setPlayLabel] = useState(playing ? 'Pause' : 'Play');
+
   const onPlayClick = () => {
-    if (!playing && props.audioUrl)
-      setPlaying(true);     
-    else
-      setPlaying(false);     
-  }
+    if (!playing && props.audioUrl) {
+      setPlaying(true);
+      setPlayLabel(audioEl.current?.currentTime.toString() as string);
+      audioEl.current?.play();
+    } else {
+      setPlaying(false);
+      audioEl.current?.pause();
+    }
+  };
 
   const onDeleteClick = async () => {
     await api.deleteSlideAudio(props.slideId);
+  };
+
+  function fmtMSS(s: any) {
+    return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
   }
 
+  const onListen = (time: number) => {
+    setPlayLabel(
+      `${fmtMSS(time.toFixed(0))}/${fmtMSS(
+        audioEl.current?.duration.toFixed(0)
+      )}`
+    );
+  };
 
   return (
     <Paper variant="outlined" className={classes.root}>
@@ -130,25 +144,38 @@ export default function EditorBar(props: Props): ReactElement {
         value={value}
         onChange={(event, newValue) => {
           setValue(newValue);
-        }}      
+        }}
       >
-        <BottomNavigationAction 
-          label={recLabel} 
-          icon={recIcon} 
+        <BottomNavigationAction
+          label={recLabel}
+          icon={recIcon}
           onClick={onRecClick}
         />
-        <BottomNavigationAction 
-          label={playLabel} 
-          icon={playIcon} 
+        <BottomNavigationAction
+          label={playLabel}
+          icon={playIcon}
           onClick={onPlayClick}
         />
-        <BottomNavigationAction 
-          label="Delete" 
-          icon={<DeleteIcon />} 
+        <BottomNavigationAction
+          label="Delete"
+          icon={<DeleteIcon />}
           onClick={onDeleteClick}
-        />        
+        />
       </BottomNavigation>
-      <AudioPlayer audioUrl={`${uploadsUrl}/${props.audioUrl}`} />
+      <ReactAudioPlayer
+        src={getAssetsUrl(props.audioUrl as string)}
+        controls
+        ref={(element) => {
+          audioEl = element?.audioEl as React.RefObject<HTMLAudioElement>;
+        }}
+        listenInterval={100}
+        onListen={onListen}
+        onEnded={() => {
+          setPlaying(false)
+          setPlayLabel('Play')
+        }}
+        style={{ display: 'none' }}
+      />
     </Paper>
   );
 }
