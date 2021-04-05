@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
+import store from '../../redux/store';
 
 
 // @ts-ignore
@@ -54,9 +55,9 @@ export default function PdfReader(data: Uint8Array, presentationUrl: string){
       getCanvasBlob(canvas).then(async (blob) => {
         // @ts-ignore
         // await api.createSlide(presentationUrl, {audio: null, duration: 1, order: 1, image: blob}); 
-        await api.createSlideImageOnly(presentationUrl, blob);  
+        // await api.createSlideImageOnly(presentationUrl, blob);  
         // TODO: can't dispatch there, but need to...
-        // await dispatch(createSlideImageOnly({url: presentationUrl, image: blob}));
+        await store.dispatch(createSlideImageOnly({url: presentationUrl, image: blob}));
         if (pdf && currentPage < pdf.numPages) {
           currentPage++;
           renderPage(currentPage, pdf);
