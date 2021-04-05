@@ -56,11 +56,17 @@ export const VideoEditorPage = (props: Props) => {
   const classes = useStyles();
   const state = useSelector((state: RootState) => state.presentation);
 
-  const selectedSlide:
+  let selectedSlide:
     | ISlideResponse
     | undefined = state.presentation.slides?.find(
     (slide) => slide.id === state.selectedSlideId
   );
+
+  useEffect(()=>{
+    selectedSlide = state.presentation.slides?.find(
+      (slide) => slide.id === state.selectedSlideId
+    );
+  },[state.presentation.slides]);
 
   let { presentationUrl } = useParams<ParamTypes>();
 

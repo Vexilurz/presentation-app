@@ -17,7 +17,7 @@ import MicRecorder from 'mic-recorder-to-mp3';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
-import { updateSlideAudio } from '../../redux/presentation/presentationThunks';
+import { deleteSlideAudio, updateSlideAudio } from '../../redux/presentation/presentationThunks';
 import { useAppDispatch } from '../../redux/store';
 import { getAssetsUrl } from '../../lib/assests-helper';
 import ReactAudioPlayer from 'react-audio-player';
@@ -106,10 +106,17 @@ export default function EditorBar(props: Props): ReactElement {
     else startRec();
   };
 
+  const [isPlayDisabled, setIsPlayDisabled] = useState(true);
   const [playing, setPlaying] = useState(false);
   const playIcon = playing ? <PauseIcon /> : <PlayArrowIcon />;
 
   const [playLabel, setPlayLabel] = useState(playing ? 'Pause' : 'Play');
+
+  useEffect(()=>{
+    setPlaying(false);
+    setPlayLabel(!props.audioUrl ? 'No audio' : 'Play');
+    setIsPlayDisabled(!props.audioUrl);
+  },[props.audioUrl])
 
   const onPlayClick = () => {
     if (!playing && props.audioUrl) {
@@ -123,7 +130,8 @@ export default function EditorBar(props: Props): ReactElement {
   };
 
   const onDeleteClick = async () => {
-    await api.deleteSlideAudio(props.slideId);
+    // await api.deleteSlideAudio(props.slideId);
+    await dispatch(deleteSlideAudio(props.slideId));
   };
 
   function fmtMSS(s: any) {
@@ -152,6 +160,7 @@ export default function EditorBar(props: Props): ReactElement {
           onClick={onRecClick}
         />
         <BottomNavigationAction
+          disabled={isPlayDisabled}
           label={playLabel}
           icon={playIcon}
           onClick={onPlayClick}

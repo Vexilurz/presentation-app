@@ -75,6 +75,19 @@ export class AixmusicApi extends HttpClient {
     });
   }
 
+  public async createSlideImageOnly(
+    url: string,
+    image: Blob
+  ): Promise<ISlideResponse> {
+    let formData = new FormData();
+    formData.append('image', image, 'image.png');
+    return await this.instance.post(`slides/${url}/create`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  }
+
   public async updateSlide(
     slideID: number,
     dto: IUpdateSlideDTO

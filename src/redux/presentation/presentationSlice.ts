@@ -4,6 +4,7 @@ import {
   ISlideResponse,
 } from '../../types/AixmusicApiTypes';
 import {
+  createSlideImageOnly,
   deleteSlide,
   deleteSlideAudio,
   getPresentation,
@@ -58,7 +59,7 @@ const presentationSlice = createSlice({
       state.selectedSlide = {} as ISlideResponse;
     });
     builder.addCase(
-      updateSlideAudio.fulfilled || deleteSlideAudio.fulfilled,
+      updateSlideAudio.fulfilled,
       (state, action) => {
         const { payload } = action;
         let slides: ISlideResponse[] = [] as ISlideResponse[];
@@ -66,6 +67,30 @@ const presentationSlice = createSlice({
         slides = state.presentation.slides?.map((slide) =>
           payload.id !== slide.id ? slide : payload
         );
+        state.presentation.slides = slides;
+        console.log('updated')
+      }
+    );
+    builder.addCase(
+      deleteSlideAudio.fulfilled,
+      (state, action) => {
+        const { payload } = action;
+        let slides: ISlideResponse[] = [] as ISlideResponse[];
+        // @ts-ignore
+        slides = state.presentation.slides?.map((slide) =>
+          payload.id !== slide.id ? slide : payload
+        );
+        state.presentation.slides = slides;
+        console.log('deleted')
+      }
+    );
+    builder.addCase(
+      createSlideImageOnly.fulfilled,
+      (state, action) => {
+        const { payload } = action;
+        let slides: ISlideResponse[] = state.presentation.slides ? state.presentation.slides : [] as ISlideResponse[];
+        // @ts-ignore
+        slides.push(payload);
         state.presentation.slides = slides;
       }
     );
