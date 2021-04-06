@@ -119,12 +119,13 @@ export class AixmusicApi extends HttpClient {
 
   public async updateSlideAudio(
     slideID: number,
-    audio: Blob
+    audio: Blob,
+    duration: number
   ): Promise<ISlideResponse> {
     let formData = new FormData();
     // TODO: append silence file (blob) when blob do not exist
     formData.append('audio', audio, 'audio.mp3');
-    // TODO: formData.append('duration', ???)
+    formData.append('duration', duration.toString())
     return await this.instance.post(`slide/${slideID}/update`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',

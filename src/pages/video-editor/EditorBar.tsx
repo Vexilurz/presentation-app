@@ -21,6 +21,7 @@ import { deleteSlideAudio, updateSlideAudio } from '../../redux/presentation/pre
 import { useAppDispatch } from '../../redux/store';
 import { getAssetsUrl } from '../../lib/assests-helper';
 import ReactAudioPlayer from 'react-audio-player';
+import jsmediatags from 'jsmediatags';
 
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 const api = AixmusicApi.getInstance();
@@ -53,10 +54,16 @@ export default function EditorBar(props: Props): ReactElement {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
+  function fmtMSS(s: any) {
+    return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
+  }
+
+  // *** Recording ***
+
   const [isRecording, setIsRecording] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
-
-  let audioEl = React.createRef<HTMLAudioElement>();
+  const [recTimer, setRecTimer] = useState(0);
+  const countRecRef = useRef(null);
 
   useEffect(() => {
     navigator.getUserMedia(
@@ -70,10 +77,7 @@ export default function EditorBar(props: Props): ReactElement {
         setIsBlocked(true);
       }
     );
-  }, []);
-
-  const [recTimer, setRecTimer] = useState(0);
-  const countRecRef = useRef(null);
+  }, []);  
 
   const startRec = () => {
     if (isBlocked) {
@@ -98,9 +102,17 @@ export default function EditorBar(props: Props): ReactElement {
       .getMp3()
       // @ts-ignore
       .then(async ([buffer, blob]) => {
-        // await api.updateSlideAudio(state.selectedSlideId, blob);
+        jsmediatags.read(blob as Blob, {
+          onSuccess: function(tag) {
+            // TODO: get duration from tag and put to dispatch below
+            console.log('tag', tag);
+          },
+          onError: function(error) {
+            console.log(error);
+          }
+        });        
         dispatch(
-          updateSlideAudio({ slideID: state.selectedSlideId, audio: blob })
+          updateSlideAudio({ slideID: state.selectedSlideId, audio: blob, duration: 1 })
         );
         // @ts-ignore
         clearInterval(countRecRef.current);
@@ -115,6 +127,10 @@ export default function EditorBar(props: Props): ReactElement {
     if (isRecording) stopRec();
     else startRec();
   };  
+
+  // *** Playing ***
+
+  let audioEl = React.createRef<HTMLAudioElement>();
 
   const [isPlayDisabled, setIsPlayDisabled] = useState(true);
   const [playing, setPlaying] = useState(false);
@@ -137,16 +153,7 @@ export default function EditorBar(props: Props): ReactElement {
       setPlaying(false);
       audioEl.current?.pause();
     }
-  };
-
-  const onDeleteClick = async () => {
-    // await api.deleteSlideAudio(props.slideId);
-    await dispatch(deleteSlideAudio(props.slideId));
-  };
-
-  function fmtMSS(s: any) {
-    return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;
-  }
+  };  
 
   const onListen = (time: number) => {
     setPlayLabel(
@@ -154,6 +161,11 @@ export default function EditorBar(props: Props): ReactElement {
         audioEl.current?.duration.toFixed(0)
       )}`
     );
+  };
+
+  const onDeleteClick = async () => {
+    // await api.deleteSlideAudio(props.slideId);
+    await dispatch(deleteSlideAudio(props.slideId));
   };
 
   return (
