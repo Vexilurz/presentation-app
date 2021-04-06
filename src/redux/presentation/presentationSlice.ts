@@ -4,6 +4,7 @@ import {
   ISlideResponse,
 } from '../../types/AixmusicApiTypes';
 import {
+  createSlide,
   createSlideImageOnly,
   deleteSlide,
   deleteSlideAudio,
@@ -85,7 +86,7 @@ const presentationSlice = createSlice({
       }
     );
     builder.addCase(
-      createSlideImageOnly.fulfilled,
+      createSlide.fulfilled,
       (state, action) => {
         const { payload } = action;
         let slides: ISlideResponse[] = state.presentation.slides ? state.presentation.slides : [] as ISlideResponse[];

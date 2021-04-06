@@ -153,6 +153,7 @@ export default function EditorBar(props: Props): ReactElement {
         onChange={(event, newValue) => {
           setValue(newValue);
         }}
+        showLabels={true}
       >
         <BottomNavigationAction
           label={recLabel}
