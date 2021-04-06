@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
     },
     sidebar: {
+      zIndex: 1,
       maxHeight: '100%',
       display: 'flex',
       flexDirection: 'column',
@@ -62,22 +63,22 @@ export const VideoEditorPage = (props: Props) => {
     (slide) => slide.id === state.selectedSlideId
   );
 
-  useEffect(()=>{
+  useEffect(() => {
     selectedSlide = state.presentation.slides?.find(
       (slide) => slide.id === state.selectedSlideId
     );
-  },[state.presentation.slides]);
+  }, [state.presentation.slides]);
 
   let { presentationUrl } = useParams<ParamTypes>();
 
   return (
     <div className={classes.root}>
       <Grid container className={classes.grid}>
-        <Grid item md={3} className={classes.sidebar}>
+        <Grid item md={2} className={classes.sidebar}>
           <SlidesView presentationUrl={presentationUrl} />
           <SlidesViewBottomRow presentationUrl={presentationUrl} />
         </Grid>
-        <Grid item md={9} className={classes.workspace}>
+        <Grid item md={10} className={classes.workspace}>
           {state.presentation.id ? (
             <>
               <SlideToolbar />
@@ -85,10 +86,12 @@ export const VideoEditorPage = (props: Props) => {
             </>
           ) : null}
         </Grid>
-        <EditorBar
-          audioUrl={selectedSlide?.audio}
-          slideId={state.selectedSlideId}
-        />
+        {state.selectedSlide?.id ? (
+          <EditorBar
+            audioUrl={selectedSlide?.audio}
+            slideId={state.selectedSlideId}
+          />
+        ) : null}
       </Grid>
     </div>
   );

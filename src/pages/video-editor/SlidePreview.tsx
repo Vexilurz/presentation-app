@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { createStyles, Divider, makeStyles, Theme } from '@material-ui/core';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { setSelectedSlideId } from '../../redux/presentation/presentationSlice';
@@ -19,10 +19,15 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       padding: '3px 0',
     },
+    slide: {
+      boxSizing: 'border-box',
+      border: '1px solid',
+      borderColor: theme.palette.grey[300],
+    },
     selectedSlide: {
       boxSizing: 'border-box',
       border: '2px solid',
-      borderColor: theme.palette.secondary.main
+      borderColor: theme.palette.secondary.main,
     },
   })
 );
@@ -35,11 +40,11 @@ export const SlidePreview = (props: Props) => {
     <div className={classes.root}>
       <img
         src={`${uploadsUrl}${props.slide.image}`}
-        width="30%"
+        width="40%"
         height="100%"
         alt=""
         className={
-          state.selectedSlideId === props.slide.id ? classes.selectedSlide : ''
+          state.selectedSlideId === props.slide.id ? classes.selectedSlide : classes.slide
         }
         onClick={() => {
           dispatch(setSelectedSlideId(props.slide.id));

@@ -17,6 +17,9 @@ import {
 interface Props {}
 
 const useStyles = makeStyles({
+  root: {
+
+  },
   navbarDisplayFlex: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -28,7 +31,7 @@ const useStyles = makeStyles({
   linkText: {
     textDecoration: 'none',
     textTransform: 'uppercase',
-    color: 'white',
+    color: 'black',
   },
 });
 
@@ -40,7 +43,7 @@ const navLinks = [
 export default function Navbar(props: Props): ReactElement {
   const classes = useStyles();
   return (
-    <AppBar position="static">
+    <AppBar position="static" className={classes.root}>
       <Toolbar>
         <Container maxWidth="lg" className={classes.navbarDisplayFlex}>
           <IconButton

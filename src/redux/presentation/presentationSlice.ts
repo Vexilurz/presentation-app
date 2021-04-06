@@ -64,7 +64,6 @@ const presentationSlice = createSlice({
       (state, action) => {
         const { payload } = action;
         let slides: ISlideResponse[] = [] as ISlideResponse[];
-        // @ts-ignore
         slides = state.presentation.slides?.map((slide) =>
           payload.id !== slide.id ? slide : payload
         );
@@ -77,7 +76,6 @@ const presentationSlice = createSlice({
       (state, action) => {
         const { payload } = action;
         let slides: ISlideResponse[] = [] as ISlideResponse[];
-        // @ts-ignore
         slides = state.presentation.slides?.map((slide) =>
           payload.id !== slide.id ? slide : payload
         );
@@ -90,7 +88,6 @@ const presentationSlice = createSlice({
       (state, action) => {
         const { payload } = action;
         let slides: ISlideResponse[] = state.presentation.slides ? state.presentation.slides : [] as ISlideResponse[];
-        // @ts-ignore
         slides.push(payload);
         state.presentation.slides = slides;
       }

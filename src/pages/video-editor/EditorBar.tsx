@@ -17,15 +17,17 @@ import MicRecorder from 'mic-recorder-to-mp3';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
-import { deleteSlideAudio, updateSlideAudio } from '../../redux/presentation/presentationThunks';
+import {
+  deleteSlideAudio,
+  updateSlideAudio,
+} from '../../redux/presentation/presentationThunks';
 import { useAppDispatch } from '../../redux/store';
 import { getAssetsUrl } from '../../lib/assests-helper';
 import ReactAudioPlayer from 'react-audio-player';
-import jsmediatags from 'jsmediatags';
+import * as mm from 'music-metadata-browser';
 
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
-const api = AixmusicApi.getInstance();
-
+let countRecTimer: NodeJS.Timeout;
 interface Props {
   audioUrl?: string;
   slideId: number;
@@ -38,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '350px',
       backgroundColor: theme.palette.common.white,
       position: 'fixed',
-      left: '50%',
+      left: '47%',
       bottom: '20px',
       display: 'flex',
       flexDirection: 'column',
@@ -63,7 +65,6 @@ export default function EditorBar(props: Props): ReactElement {
   const [isRecording, setIsRecording] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [recTimer, setRecTimer] = useState(0);
-  const countRecRef = useRef(null);
 
   useEffect(() => {
     navigator.getUserMedia(
@@ -77,48 +78,34 @@ export default function EditorBar(props: Props): ReactElement {
         setIsBlocked(true);
       }
     );
-  }, []);  
+  }, []);
 
-  const startRec = () => {
+  const startRec = async () => {
     if (isBlocked) {
       console.log('Recording Permission Denied');
     } else {
       onDeleteClick();
-      Mp3Recorder.start()
-        .then(() => {
-          setIsRecording(true);
-          setRecTimer(0);
-          // @ts-ignore
-          countRecRef.current = setInterval(() => {
-            setRecTimer((timer) => timer + 1)
-          }, 1000)
-        })
-        .catch((e: any) => console.error(e));
+      await Mp3Recorder.start();
+      setIsRecording(true);
+      setRecTimer(0);
+      countRecTimer = setInterval(() => {
+        setRecTimer((timer) => timer + 1);
+      }, 1000);
     }
   };
 
-  const stopRec = () => {
-    Mp3Recorder.stop()
-      .getMp3()
-      // @ts-ignore
-      .then(async ([buffer, blob]) => {
-        jsmediatags.read(blob as Blob, {
-          onSuccess: function(tag) {
-            // TODO: get duration from tag and put to dispatch below
-            console.log('tag', tag);
-          },
-          onError: function(error) {
-            console.log(error);
-          }
-        });        
-        dispatch(
-          updateSlideAudio({ slideID: state.selectedSlideId, audio: blob, duration: 1 })
-        );
-        // @ts-ignore
-        clearInterval(countRecRef.current);
-        setIsRecording(false);
+  const stopRec = async () => {
+    const [buffer, blob] = await Mp3Recorder.stop().getMp3();
+    const metadata = await mm.parseBlob(blob);
+    await dispatch(
+      updateSlideAudio({
+        slideID: state.selectedSlideId,
+        audio: blob,
+        duration: metadata.format.duration as number,
       })
-      .catch((e: any) => console.log(e));
+    );
+    clearInterval(countRecTimer);
+    setIsRecording(false);
   };
 
   const recIcon = isRecording ? <StopIcon /> : <FiberManualRecordIcon />;
@@ -126,7 +113,7 @@ export default function EditorBar(props: Props): ReactElement {
   const onRecClick = () => {
     if (isRecording) stopRec();
     else startRec();
-  };  
+  };
 
   // *** Playing ***
 
@@ -138,11 +125,11 @@ export default function EditorBar(props: Props): ReactElement {
 
   const [playLabel, setPlayLabel] = useState(playing ? 'Pause' : 'Play');
 
-  useEffect(()=>{
+  useEffect(() => {
     setPlaying(false);
     setPlayLabel(!props.audioUrl ? 'No audio' : 'Play');
     setIsPlayDisabled(!props.audioUrl);
-  },[props.audioUrl])
+  }, [props.audioUrl]);
 
   const onPlayClick = () => {
     if (!playing && props.audioUrl) {
@@ -153,7 +140,7 @@ export default function EditorBar(props: Props): ReactElement {
       setPlaying(false);
       audioEl.current?.pause();
     }
-  };  
+  };
 
   const onListen = (time: number) => {
     setPlayLabel(
@@ -164,17 +151,16 @@ export default function EditorBar(props: Props): ReactElement {
   };
 
   const onDeleteClick = async () => {
-    // await api.deleteSlideAudio(props.slideId);
     await dispatch(deleteSlideAudio(props.slideId));
   };
 
   return (
     <Paper variant="outlined" className={classes.root}>
       <BottomNavigation
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }}
+        // value={value}
+        // onChange={(event, newValue) => {
+        //   setValue(newValue);
+        // }}
         showLabels={true}
       >
         <BottomNavigationAction
@@ -194,20 +180,22 @@ export default function EditorBar(props: Props): ReactElement {
           onClick={onDeleteClick}
         />
       </BottomNavigation>
-      <ReactAudioPlayer
-        src={getAssetsUrl(props.audioUrl as string)}
-        controls
-        ref={(element) => {
-          audioEl = element?.audioEl as React.RefObject<HTMLAudioElement>;
-        }}
-        listenInterval={100}
-        onListen={onListen}
-        onEnded={() => {
-          setPlaying(false)
-          setPlayLabel('Play')
-        }}
-        style={{ display: 'none' }}
-      />
+      {(props.audioUrl && props.audioUrl?.length > 0 )? (
+        <ReactAudioPlayer
+          src={getAssetsUrl(props.audioUrl as string)}
+          controls
+          ref={(element) => {
+            audioEl = element?.audioEl as React.RefObject<HTMLAudioElement>;
+          }}
+          listenInterval={100}
+          onListen={onListen}
+          onEnded={() => {
+            setPlaying(false);
+            setPlayLabel('Play');
+          }}
+          style={{ display: 'none' }}
+        />
+      ) : null}
     </Paper>
   );
 }

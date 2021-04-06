@@ -31,6 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       margin: theme.spacing(1),
     },
+    buttonDanger: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.error.main
+    },
   })
 );
 
@@ -50,9 +54,9 @@ export const SlideToolbar = (props: Props) => {
     let output = await crunker.export(concated, 'audio/mp3');
     const api = AixmusicApi.getInstance();
     const res = await api.updatePresentation(state.presentation.url, {
-      audio: output.blob
+      audio: output.blob,
     });
-    console.log(res);
+    alert('Presentation audio regenerated!');
   };
 
   return (
@@ -69,15 +73,16 @@ export const SlideToolbar = (props: Props) => {
       >
         Upload
       </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        className={classes.button}
-        startIcon={<DeleteIcon />}
-        onClick={() => dispatch(deleteSlide(state.selectedSlideId))}
-      >
-        Delete
-      </Button>
+      {state.selectedSlide?.id ? (
+        <Button
+          variant="contained"
+          className={classes.buttonDanger}
+          startIcon={<DeleteIcon />}
+          onClick={() => dispatch(deleteSlide(state.selectedSlideId))}
+        >
+          Delete Slide
+        </Button>
+      ) : null}
     </Toolbar>
   );
 };
