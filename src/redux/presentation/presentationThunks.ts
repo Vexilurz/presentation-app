@@ -58,6 +58,17 @@ async ( {url, dto}: {url: string, dto: ICreateSlideDTO}, { dispatch }) => {
   }
 });
 
+export const createSlideImageOnly = createAsyncThunk('slide/create/image', 
+async ( {url, image}: {url: string, image: Blob}, { dispatch }) => {
+  try {
+    const data = await api.createSlideImageOnly(url, image);
+    return data;
+  } catch (err) {
+    // Here we can check errors and dispatch some actions if is needed
+    throw err;
+  }
+});
+
 export const updateSlide = createAsyncThunk('slide/update', 
 async ( {slideID, dto}: {slideID: number, dto: IUpdateSlideDTO}, { dispatch }) => {
   try {
@@ -69,11 +80,34 @@ async ( {slideID, dto}: {slideID: number, dto: IUpdateSlideDTO}, { dispatch }) =
   }
 });
 
+export const updateSlideAudio = createAsyncThunk('slide/update/audio', 
+async ( {slideID, audio, duration}: {slideID: number, audio: Blob, duration: number}, { dispatch }) => {
+  try {
+    const data = await api.updateSlideAudio(slideID, audio, duration);
+    return data;
+  } catch (err) {
+    // Here we can check errors and dispatch some actions if is needed
+    throw err;
+  }
+});
+
+export const deleteSlideAudio = createAsyncThunk('slide/delete/audio', 
+async ( slideID: number, { dispatch }) => {
+  try {
+    const data = await api.deleteSlideAudio(slideID);
+    return data;
+  } catch (err) {
+    // Here we can check errors and dispatch some actions if is needed
+    throw err;
+  }
+});
+
 export const deleteSlide = createAsyncThunk('slide/delete', 
 async ( slideID: number, { dispatch }) => {
   try {
     const data = await api.deleteSlide(slideID);
-    return data;
+    alert('Slide deleted!')
+    return slideID;
   } catch (err) {
     // Here we can check errors and dispatch some actions if is needed
     throw err;

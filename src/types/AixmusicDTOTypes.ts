@@ -3,21 +3,21 @@ export interface ICreatePresentationDTO {
 }
 
 export interface IUpdatePresentationDTO {
-  title: string;
-  description: string;
-  audio: string;
+  title?: string;
+  description?: string;
+  audio?: Blob;
 }
 
 export interface ICreateSlideDTO {
   order: number;
-  audio: string;
-  image: string;
+  audio: Blob;
+  image: Blob;
   duration: number;
 }
 
 export interface IUpdateSlideDTO {
   order: number;
-  audio: string;
-  image: string;
+  audio: Blob;
+  image: Blob;
   duration: number;
 }

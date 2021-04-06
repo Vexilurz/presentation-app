@@ -10,10 +10,11 @@ interface Props {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     contents: {
-      height: '100vh'
+      height: '100vh',
     },
     pages: {
-      height: 'calc(100% - 64px);'
+      paddingTop: '1px',
+      height: 'calc(100% - 65px);'
     }
   }),
 );

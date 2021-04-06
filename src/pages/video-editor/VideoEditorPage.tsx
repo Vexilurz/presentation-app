@@ -5,18 +5,27 @@ import {
   makeStyles,
   Theme,
 } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getPresentation } from '../../redux/presentation/presentationThunks';
+import {
+  deleteSlide,
+  getPresentation,
+} from '../../redux/presentation/presentationThunks';
 import { RootState } from '../../redux/rootReducer';
 import { useAppDispatch } from '../../redux/store';
 import Paper from '@material-ui/core/Paper';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import { SlidesView } from './SlidesView';
+import EditorBar from './EditorBar';
+import { SlidesViewBottomRow } from './SlidesViewBottomRow';
+import { ISlideResponse } from '../../types/AixmusicApiTypes';
+import { SlideToolbar } from './SlideToolbar';
+import SlideImg from './SlideImg';
 
 interface Props {}
 
 interface ParamTypes {
-  presentationUrl: string
+  presentationUrl: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,31 +37,61 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
     },
     sidebar: {
-      height: '100%',
+      zIndex: 1,
+      maxHeight: '100%',
+      display: 'flex',
+      flexDirection: 'column',
       backgroundColor: theme.palette.primary.light,
       whiteSpace: 'normal',
-      wordBreak: 'break-all'
+      wordBreak: 'break-all',
+    },
+    workspace: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
     },
   })
 );
 
 export const VideoEditorPage = (props: Props) => {
-  const url = 'test';
-  const state = useSelector((state: RootState) => state.presentation);
-  const dispatch = useAppDispatch();
   const classes = useStyles();
+  const state = useSelector((state: RootState) => state.presentation);
 
-  let { presentationUrl } = useParams<ParamTypes>();
+  let selectedSlide:
+    | ISlideResponse
+    | undefined = state.presentation.slides?.find(
+    (slide) => slide.id === state.selectedSlideId
+  );
 
   useEffect(() => {
-    dispatch(getPresentation(presentationUrl));
-  }, []);
+    selectedSlide = state.presentation.slides?.find(
+      (slide) => slide.id === state.selectedSlideId
+    );
+  }, [state.presentation.slides]);
+
+  let { presentationUrl } = useParams<ParamTypes>();
 
   return (
     <div className={classes.root}>
       <Grid container className={classes.grid}>
-        <Grid item md={3} className={classes.sidebar}>{JSON.stringify(state.presentation)}</Grid>
-        <Grid item md={9}></Grid>
+        <Grid item md={2} className={classes.sidebar}>
+          <SlidesView presentationUrl={presentationUrl} />
+          <SlidesViewBottomRow presentationUrl={presentationUrl} />
+        </Grid>
+        <Grid item md={10} className={classes.workspace}>
+          {state.presentation.id ? (
+            <>
+              <SlideToolbar />
+              <SlideImg src={selectedSlide?.image} />
+            </>
+          ) : null}
+        </Grid>
+        {state.selectedSlide?.id ? (
+          <EditorBar
+            audioUrl={selectedSlide?.audio}
+            slideId={state.selectedSlideId}
+          />
+        ) : null}
       </Grid>
     </div>
   );
