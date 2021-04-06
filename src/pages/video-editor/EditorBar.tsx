@@ -72,6 +72,9 @@ export default function EditorBar(props: Props): ReactElement {
     );
   }, []);
 
+  const [recTimer, setRecTimer] = useState(0);
+  const countRecRef = useRef(null);
+
   const startRec = () => {
     if (isBlocked) {
       console.log('Recording Permission Denied');
@@ -80,6 +83,11 @@ export default function EditorBar(props: Props): ReactElement {
       Mp3Recorder.start()
         .then(() => {
           setIsRecording(true);
+          setRecTimer(0);
+          // @ts-ignore
+          countRecRef.current = setInterval(() => {
+            setRecTimer((timer) => timer + 1)
+          }, 1000)
         })
         .catch((e: any) => console.error(e));
     }
@@ -94,17 +102,19 @@ export default function EditorBar(props: Props): ReactElement {
         dispatch(
           updateSlideAudio({ slideID: state.selectedSlideId, audio: blob })
         );
+        // @ts-ignore
+        clearInterval(countRecRef.current);
         setIsRecording(false);
       })
       .catch((e: any) => console.log(e));
   };
 
   const recIcon = isRecording ? <StopIcon /> : <FiberManualRecordIcon />;
-  const recLabel = isRecording ? 'Stop' : 'Record';
+  const recLabel = isRecording ? `${fmtMSS(recTimer.toFixed(0))}` : 'Record';
   const onRecClick = () => {
     if (isRecording) stopRec();
     else startRec();
-  };
+  };  
 
   const [isPlayDisabled, setIsPlayDisabled] = useState(true);
   const [playing, setPlaying] = useState(false);
