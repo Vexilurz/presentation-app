@@ -40,7 +40,7 @@ export const SlidePreview = (props: Props) => {
     <div className={classes.root}>
       <img
         src={`${uploadsUrl}${props.slide.image}`}
-        width="40%"
+        width="80%"
         height="100%"
         alt=""
         className={
