@@ -83,7 +83,7 @@ export default function EditorBar(props: Props): ReactElement {
     if (isBlocked) {
       console.log('Recording Permission Denied');
     } else {
-      onDeleteClick();
+      await dispatch(deleteSlideAudio(props.slideId));
       await Mp3Recorder.start();
       setIsRecording(true);
       setRecTimer(0);
@@ -149,10 +149,6 @@ export default function EditorBar(props: Props): ReactElement {
     );
   };
 
-  const onDeleteClick = async () => {
-    await dispatch(deleteSlideAudio(props.slideId));
-  };
-
   return (
     <Paper variant="outlined" className={classes.root}>
       <BottomNavigation
@@ -172,11 +168,6 @@ export default function EditorBar(props: Props): ReactElement {
           label={playLabel}
           icon={playIcon}
           onClick={onPlayClick}
-        />
-        <BottomNavigationAction
-          label="Delete"
-          icon={<DeleteIcon />}
-          onClick={onDeleteClick}
         />
       </BottomNavigation>
       {props.audioUrl && props.audioUrl?.length > 0 ? (

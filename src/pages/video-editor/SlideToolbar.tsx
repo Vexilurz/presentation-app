@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { deleteSlide } from '../../redux/presentation/presentationThunks';
+import { deleteSlide, deleteSlideAudio } from '../../redux/presentation/presentationThunks';
 
 // @ts-ignore
 import Crunker from 'crunker';
@@ -74,6 +74,11 @@ export const SlideToolbar = (props: Props) => {
     handleMenuClose();
     dispatch(deleteSlide(state.selectedSlideId));
   }
+  const handleDeleteRecord = async () => {
+    handleMenuClose();
+    await dispatch(deleteSlideAudio(state.selectedSlideId));
+    alert('Slide audio record deleted!');
+  }
 
   return (
     <Toolbar className={classes.root}>
@@ -105,7 +110,8 @@ export const SlideToolbar = (props: Props) => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleDeleteSlide}>Delete Slide</MenuItem>
+            <MenuItem onClick={handleDeleteSlide}>Delete slide</MenuItem>
+            <MenuItem onClick={handleDeleteRecord}>Delete audio record</MenuItem>
           </Menu>
         </div>
       ) : null}
