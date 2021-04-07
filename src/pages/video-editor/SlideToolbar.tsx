@@ -71,7 +71,7 @@ export const SlideToolbar = (props: Props) => {
         startIcon={<CloudUploadIcon />}
         onClick={handleUpload}
       >
-        Upload
+        Save Presentation
       </Button>
       {state.selectedSlide?.id ? (
         <Button
