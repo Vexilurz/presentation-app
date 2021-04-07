@@ -1,4 +1,4 @@
-import { createStyles, Divider, makeStyles, Theme } from '@material-ui/core';
+import { Badge, createStyles, Divider, makeStyles, Theme } from '@material-ui/core';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { setSelectedSlideId } from '../../redux/presentation/presentationSlice';
@@ -36,20 +36,23 @@ export const SlidePreview = (props: Props) => {
   const classes = useStyles();
   const state = useSelector((state: RootState) => state.presentation);
   const dispatch = useAppDispatch();
+  const badgeContent = props.slide.audio ? 'A' : 0;
   return (
-    <div className={classes.root}>
-      <img
-        src={`${uploadsUrl}${props.slide.image}`}
-        width="80%"
-        height="100%"
-        alt=""
-        className={
-          state.selectedSlideId === props.slide.id ? classes.selectedSlide : classes.slide
-        }
-        onClick={() => {
-          dispatch(setSelectedSlideId(props.slide.id));
-        }}
-      />
-    </div>
+    <Badge badgeContent={badgeContent} color="error" overlap="circle">  
+      <div className={classes.root}>
+        <img
+          src={`${uploadsUrl}${props.slide.image}`}
+          width="80%"
+          height="100%"
+          alt=""
+          className={
+            state.selectedSlideId === props.slide.id ? classes.selectedSlide : classes.slide
+          }
+          onClick={() => {
+            dispatch(setSelectedSlideId(props.slide.id));
+          }}
+        />
+      </div>
+    </Badge>
   );
 };
