@@ -6,6 +6,9 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
@@ -59,6 +62,19 @@ export const SlideToolbar = (props: Props) => {
     alert('Presentation audio regenerated!');
   };
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  // @ts-ignore
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleDeleteSlide = () => {
+    handleMenuClose();
+    dispatch(deleteSlide(state.selectedSlideId));
+  }
+
   return (
     <Toolbar className={classes.root}>
       <Typography variant="h6" className={classes.title}>
@@ -74,14 +90,24 @@ export const SlideToolbar = (props: Props) => {
         Save Presentation
       </Button>
       {state.selectedSlide?.id ? (
-        <Button
-          variant="contained"
-          className={classes.buttonDanger}
-          startIcon={<DeleteIcon />}
-          onClick={() => dispatch(deleteSlide(state.selectedSlideId))}
-        >
-          Delete Slide
-        </Button>
+        <div>
+          <Button
+            variant="contained"
+            color="default"
+            className={classes.button}
+            startIcon={<MoreHorizIcon />}
+            onClick={handleMenuClick}
+          />
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleDeleteSlide}>Delete Slide</MenuItem>
+          </Menu>
+        </div>
       ) : null}
     </Toolbar>
   );
