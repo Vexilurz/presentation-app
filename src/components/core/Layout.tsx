@@ -24,7 +24,7 @@ export default function Layout({ children }: Props): ReactElement {
 
   return (
     <div className={classes.contents}>
-      <Navbar/>
+      {/* <Navbar/> */}
       <main className={classes.pages}>
         {children}
       </main>
