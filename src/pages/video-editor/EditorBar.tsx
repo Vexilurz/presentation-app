@@ -26,7 +26,7 @@ import { getAssetsUrl } from '../../lib/assests-helper';
 import ReactAudioPlayer from 'react-audio-player';
 import * as mm from 'music-metadata-browser';
 
-const Mp3Recorder = new MicRecorder({ bitRate: 128 });
+const Mp3Recorder = new MicRecorder({ bitRate: 96 });
 let countRecTimer: NodeJS.Timeout;
 interface Props {
   audioUrl?: string;
