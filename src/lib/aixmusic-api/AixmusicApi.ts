@@ -13,13 +13,17 @@ import {
 import { HttpClient } from '../http-client/HttpClient';
 
 const baseUrl = process.env.REACT_APP_BASE_URL as string;
-const token = process.env.REACT_APP_TOKEN as string;
 
 export class AixmusicApi extends HttpClient {
   private static classInstance?: AixmusicApi;
 
   private constructor() {
     super(baseUrl);
+    this.token = '';
+  }
+
+  public setToken(token: string) {
+    this.token = token;
   }
 
   public static getInstance() {
@@ -162,8 +166,8 @@ export class AixmusicApi extends HttpClient {
     return await this.instance.post(`slide/${slideID}/delete`);
   }
 
-  handleRequest(config: AxiosRequestConfig) {
-    config.headers['Authorization'] = 'bearer ' + token;
+  handleRequest (config: AxiosRequestConfig)  {
+    config.headers['Authorization'] = 'bearer ' + this.token;
     return config;
   }
 

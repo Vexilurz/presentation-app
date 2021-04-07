@@ -43,7 +43,6 @@ const playerSlice = createSlice({
     builder.addCase(getPresentation.fulfilled, (state, action) => {
       state.presentation = action.payload;
       state.slideshow = extractSlideShow(state.presentation.slides);
-      console.log(state.slideshow)
       state.status = 'succeeded';
     });
     builder.addCase(getPresentation.rejected, (state, err) => {

@@ -12,10 +12,10 @@ export const AppRoutes = (props: Props) => {
       <Route exact path="/">
         <MainPage />
       </Route>
-      <Route path="/editor/:presentationUrl?">
+      <Route path="/editor/:token/:presentationUrl?">
         <VideoEditorPage />
       </Route>
-      <Route path="/player/:presentationUrl?">
+      <Route path="/player/:token/:presentationUrl?">
         <VideoPlayerPage />
       </Route>
       <Route path="*">

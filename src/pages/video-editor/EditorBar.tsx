@@ -67,17 +67,16 @@ export default function EditorBar(props: Props): ReactElement {
   const [recTimer, setRecTimer] = useState(0);
 
   useEffect(() => {
-    navigator.getUserMedia(
-      { audio: true },
-      () => {
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(() => {
         console.log('Recording Permission Granted');
         setIsBlocked(false);
-      },
-      () => {
+      })
+      .catch(() => {
         console.log('Recording Permission Denied');
         setIsBlocked(true);
-      }
-    );
+      });
   }, []);
 
   const startRec = async () => {
@@ -180,7 +179,7 @@ export default function EditorBar(props: Props): ReactElement {
           onClick={onDeleteClick}
         />
       </BottomNavigation>
-      {(props.audioUrl && props.audioUrl?.length > 0 )? (
+      {props.audioUrl && props.audioUrl?.length > 0 ? (
         <ReactAudioPlayer
           src={getAssetsUrl(props.audioUrl as string)}
           controls

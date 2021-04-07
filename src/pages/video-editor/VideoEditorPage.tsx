@@ -21,11 +21,13 @@ import { SlidesViewBottomRow } from './SlidesViewBottomRow';
 import { ISlideResponse } from '../../types/AixmusicApiTypes';
 import { SlideToolbar } from './SlideToolbar';
 import SlideImg from './SlideImg';
+import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 
 interface Props {}
 
 interface ParamTypes {
   presentationUrl: string;
+  token: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -63,13 +65,19 @@ export const VideoEditorPage = (props: Props) => {
     (slide) => slide.id === state.selectedSlideId
   );
 
+  let { presentationUrl, token } = useParams<ParamTypes>();
+
   useEffect(() => {
+    const api = AixmusicApi.getInstance();
+    api.setToken(token);
     selectedSlide = state.presentation.slides?.find(
       (slide) => slide.id === state.selectedSlideId
     );
+
+
   }, [state.presentation.slides]);
 
-  let { presentationUrl } = useParams<ParamTypes>();
+
 
   return (
     <div className={classes.root}>

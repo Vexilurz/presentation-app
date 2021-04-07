@@ -14,11 +14,13 @@ import { RootState } from '../../redux/rootReducer';
 import { getPresentation } from '../../redux/presentation/presentationThunks';
 import { useAppDispatch } from '../../redux/store';
 import { getAssetsUrl } from '../../lib/assests-helper';
+import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 
 interface Props {}
 
 interface ParamTypes {
   presentationUrl: string;
+  token: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -49,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const VideoPlayerPage = (props: Props) => {
   const classes = useStyles();
-  let { presentationUrl } = useParams<ParamTypes>();
+  let { presentationUrl, token } = useParams<ParamTypes>();
 
   const history = useHistory();
   const state = useSelector((state: RootState) => state.player);
@@ -59,6 +61,8 @@ export const VideoPlayerPage = (props: Props) => {
   const [dimentions, setDimentions] = useState({height: 0, width: 0})
 
   useEffect(() => {
+    const api = AixmusicApi.getInstance();
+    api.setToken(token);
     dispatch(getPresentation(presentationUrl));
     setDimentions({
       height: playerContainerRef.current?.clientHeight as number,

@@ -4,12 +4,14 @@ const AXIOS_TIMEOUT = 20000;
 
 export abstract class HttpClient {
   protected readonly instance: AxiosInstance;
+  protected token: string;
 
   public constructor(baseURL: string) {
     this.instance = axios.create({
       baseURL,
       timeout: AXIOS_TIMEOUT
     });
+    this.token = '';
 
     this.initializeRequestInterceptor();
     this.initializeResponseInterceptor();
@@ -17,15 +19,15 @@ export abstract class HttpClient {
 
   private initializeRequestInterceptor = () => {
     this.instance.interceptors.request.use(
-      this.handleRequest,
-      this.handleError,
+      this.handleRequest.bind(this),
+      this.handleError.bind(this),
     );
   };
 
   private initializeResponseInterceptor = () => {
     this.instance.interceptors.response.use(
-      this.handleResponse,
-      this.handleError,
+      this.handleResponse.bind(this),
+      this.handleError.bind(this),
     );
   };
 
