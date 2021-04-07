@@ -11,6 +11,7 @@ import {
   deleteSlideAudio,
   getPresentation,
   updateSlideAudio,
+  uploadPresentation,
 } from './presentationThunks';
 
 interface PresentationState {
@@ -19,6 +20,7 @@ interface PresentationState {
   selectedSlide?: ISlideResponse;
   isBusy: BoolValue;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  uploadStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: PresentationState = {
@@ -27,6 +29,7 @@ const initialState: PresentationState = {
   selectedSlide: {} as ISlideResponse,
   isBusy: {value: false},
   status: 'idle',
+  uploadStatus: 'idle',
 };
 
 const presentationSlice = createSlice({
@@ -60,6 +63,16 @@ const presentationSlice = createSlice({
     });
     builder.addCase(getPresentation.rejected, (state, err) => {
       state.status = 'failed';
+    });
+    builder.addCase(uploadPresentation.pending, (state) => {
+      state.uploadStatus = 'loading';
+    });
+    builder.addCase(uploadPresentation.fulfilled, (state, action) => {
+      // TODO: redirect to player?
+      state.uploadStatus = 'succeeded';
+    });
+    builder.addCase(uploadPresentation.rejected, (state, err) => {
+      state.uploadStatus = 'failed';
     });
     builder.addCase(deleteSlide.fulfilled, (state, action) => {
       const deletedSlideId = action.payload;

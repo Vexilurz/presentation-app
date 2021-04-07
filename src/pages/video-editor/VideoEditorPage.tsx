@@ -5,6 +5,7 @@ import {
   Grid,
   makeStyles,
   Theme,
+  Typography,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -53,6 +54,13 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
+    message: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   })
 );
 
@@ -92,9 +100,11 @@ export const VideoEditorPage = (props: Props) => {
             <>
               <SlideToolbar />
               {state.isBusy?.value ? 
-                <div>
-                  <CircularProgress color="secondary" />
-                  Importing presentation...
+                <div className={classes.message}>
+                  <CircularProgress color="secondary" style={{margin:10}}/>
+                  <Typography variant="h6">
+                    Importing presentation...
+                  </Typography>                  
                 </div> : 
                 <SlideImg src={selectedSlide?.image} />
               }

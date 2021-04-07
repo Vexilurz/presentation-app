@@ -1,6 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { ICreatePresentationDTO, ICreateSlideDTO, IUpdatePresentationDTO, IUpdateSlideDTO } from '../../types/AixmusicDTOTypes';
+// @ts-ignore
+import Crunker from 'crunker';
+import { extractAudioUrls } from '../../lib/audio-concat';
+import { IPresentationResponse } from '../../types/AixmusicApiTypes';
 
 const api = AixmusicApi.getInstance();
 
@@ -108,6 +112,25 @@ async ( slideID: number, { dispatch }) => {
     const data = await api.deleteSlide(slideID);
     alert('Slide deleted!')
     return slideID;
+  } catch (err) {
+    // Here we can check errors and dispatch some actions if is needed
+    throw err;
+  }
+});
+
+export const uploadPresentation = createAsyncThunk('presentation/upload', 
+async ( presentation: IPresentationResponse, { dispatch }) => {
+  try {
+    const crunker = new Crunker();
+    const audioUrls = extractAudioUrls(presentation);
+    let buffers = await crunker.fetchAudio(...audioUrls);
+    let concated = await crunker.concatAudio(buffers);
+    let output = await crunker.export(concated, 'audio/mp3');
+    const res = await api.updatePresentation(presentation.url, {
+      audio: output.blob,
+    });
+    alert('Presentation audio regenerated!');
+    return res;
   } catch (err) {
     // Here we can check errors and dispatch some actions if is needed
     throw err;
