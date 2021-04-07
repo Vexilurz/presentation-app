@@ -1,4 +1,5 @@
 import {
+  CircularProgress,
   Container,
   createStyles,
   Grid,
@@ -12,7 +13,7 @@ import {
   getPresentation,
 } from '../../redux/presentation/presentationThunks';
 import { RootState } from '../../redux/rootReducer';
-import { useAppDispatch } from '../../redux/store';
+import store, { useAppDispatch } from '../../redux/store';
 import Paper from '@material-ui/core/Paper';
 import { useHistory, useParams } from 'react-router-dom';
 import { SlidesView } from './SlidesView';
@@ -90,7 +91,13 @@ export const VideoEditorPage = (props: Props) => {
           {state.presentation.id ? (
             <>
               <SlideToolbar />
-              <SlideImg src={selectedSlide?.image} />
+              {state.isBusy?.value ? 
+                <div>
+                  <CircularProgress color="secondary" />
+                  Importing presentation...
+                </div> : 
+                <SlideImg src={selectedSlide?.image} />
+              }
             </>
           ) : null}
         </Grid>

@@ -2,6 +2,8 @@ import { Button, createStyles, makeStyles, Theme } from '@material-ui/core';
 import React, { ReactElement } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import PdfReader from '../../lib/pdf/PdfReader';
+import store from '../../redux/store';
+import { setIsBusy } from '../../redux/presentation/presentationSlice';
 
 interface Props {
   presentationUrl: string,
@@ -36,6 +38,7 @@ export const SlidesViewBottomRow = (props: Props): ReactElement => {
     const fileReader = new FileReader();  
 
     fileReader.onload = function() {
+      store.dispatch(setIsBusy(true));
       // @ts-ignore
       const typedarray = new Uint8Array(this.result);
       PdfReader(typedarray, props.presentationUrl);

@@ -3,6 +3,7 @@ import {
   IPresentationResponse,
   ISlideResponse,
 } from '../../types/AixmusicApiTypes';
+import { BoolValue } from '../../types/CommonTypes';
 import {
   createSlide,
   createSlideImageOnly,
@@ -16,6 +17,7 @@ interface PresentationState {
   presentation: IPresentationResponse;
   selectedSlideId: number;
   selectedSlide?: ISlideResponse;
+  isBusy: BoolValue;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
@@ -23,6 +25,7 @@ const initialState: PresentationState = {
   presentation: {} as IPresentationResponse,
   selectedSlideId: -1,
   selectedSlide: {} as ISlideResponse,
+  isBusy: {value: false},
   status: 'idle',
 };
 
@@ -39,6 +42,12 @@ const presentationSlice = createSlice({
         (slide) => slide.id === state.selectedSlideId
       );
     },
+    setIsBusy: (
+      state: PresentationState,
+      action: PayloadAction<boolean>
+    ) => {
+      state.isBusy = {value: action.payload};
+    }
   },
   // Thunk reducers
   extraReducers: (builder) => {
@@ -95,6 +104,6 @@ const presentationSlice = createSlice({
   },
 });
 
-export const { setSelectedSlideId } = presentationSlice.actions;
+export const { setSelectedSlideId, setIsBusy } = presentationSlice.actions;
 
 export default presentationSlice.reducer;

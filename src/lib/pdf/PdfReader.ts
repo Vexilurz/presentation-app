@@ -9,6 +9,7 @@ import * as pdfjsLib  from 'pdfjs-dist';
 import { useAppDispatch } from '../../redux/store';
 import { createSlide, createSlideImageOnly } from '../../redux/presentation/presentationThunks';
 import { AixmusicApi } from '../aixmusic-api/AixmusicApi';
+import { setIsBusy } from '../../redux/presentation/presentationSlice';
 
 // @ts-ignore
 function getCanvasBlob(canvas) {
@@ -64,7 +65,7 @@ export default function PdfReader(data: Uint8Array, presentationUrl: string){
           currentPage++;
           renderPage(currentPage, pdf);
         } else {
-
+          store.dispatch(setIsBusy(false));
         };
       });      
     });   
