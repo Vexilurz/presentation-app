@@ -193,13 +193,13 @@ export default function EditorBar(props: Props): ReactElement {
           icon={playIcon}
           onClick={onPlayClick}
         />
-        {state.selectedSlide?.id ? (
+        {state.selectedSlideId ? (
           <BottomNavigationAction
             icon={<MoreHorizIcon />}
             onClick={handleMenuClick}
           />
         ) : null}  
-        {state.selectedSlide?.id ? (  
+        {state.selectedSlideId ? (  
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}

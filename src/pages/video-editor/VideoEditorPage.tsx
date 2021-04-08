@@ -111,7 +111,7 @@ export const VideoEditorPage = (props: Props) => {
             </>
           ) : null}
         </Grid>
-        {state.selectedSlide?.id ? (
+        {state.selectedSlideId ? (
           <EditorBar
             audioUrl={selectedSlide?.audio}
             slideId={state.selectedSlideId}
