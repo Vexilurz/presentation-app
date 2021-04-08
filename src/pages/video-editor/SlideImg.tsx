@@ -26,16 +26,17 @@ const useStyles = makeStyles((theme: Theme) =>
 function SlideImg({ src }: Props): ReactElement {
   const classes = useStyles();
   const state = useSelector((state: RootState) => state.presentation);
+
   return (
     <div className={classes.slideImageContainer}>
-      {state.selectedSlide?.id ? (
+      {state.selectedSlideId ? (
         <img
           src={`${uploadsUrl}${src}`}
           alt=""
           className={classes.slideImage}
         />
       ) : (
-        <Typography variant="h6">Pls select slide</Typography>
+        <Typography variant="h6">Please select slide</Typography>
       )}
     </div>
   );

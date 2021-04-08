@@ -59,6 +59,7 @@ const presentationSlice = createSlice({
     });
     builder.addCase(getPresentation.fulfilled, (state, action) => {
       state.presentation = action.payload;
+      state.selectedSlideId = state.presentation.slides[0]?.id;
       state.status = 'succeeded';
     });
     builder.addCase(getPresentation.rejected, (state, err) => {
