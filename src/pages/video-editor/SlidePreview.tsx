@@ -5,6 +5,7 @@ import { setSelectedSlideId } from '../../redux/presentation/presentationSlice';
 import { RootState } from '../../redux/rootReducer';
 import { useAppDispatch } from '../../redux/store';
 import { ISlideResponse } from '../../types/AixmusicApiTypes';
+import MicIcon from '@material-ui/icons/Mic';
 
 const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
 interface Props {
@@ -36,7 +37,7 @@ export const SlidePreview = (props: Props) => {
   const classes = useStyles();
   const state = useSelector((state: RootState) => state.presentation);
   const dispatch = useAppDispatch();
-  const badgeContent = props.slide.audio ? 'A' : 0;
+  const badgeContent = props.slide.audio ? <MicIcon /> : 0;
   return (
     <Badge badgeContent={badgeContent} color="error" overlap="circle">  
       <div className={classes.root}>
