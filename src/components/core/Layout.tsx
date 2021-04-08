@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     pages: {
       paddingTop: '1px',
-      height: 'calc(100% - 65px);'
+      height: '100%'
     }
   }),
 );
