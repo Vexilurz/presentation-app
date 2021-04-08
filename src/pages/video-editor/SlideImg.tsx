@@ -2,9 +2,10 @@ import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import React, { ReactElement } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
+import { getAssetsUrl } from '../../lib/assests-helper';
 
 interface Props {
-  src?: string;
+  src?: string | undefined;
 }
 
 const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
@@ -20,6 +21,13 @@ const useStyles = makeStyles((theme: Theme) =>
     slideImage: {
       margin: '30px 0',
     },
+    message: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
   })
 );
 
@@ -31,12 +39,12 @@ function SlideImg({ src }: Props): ReactElement {
     <div className={classes.slideImageContainer}>
       {state.selectedSlideId ? (
         <img
-          src={`${uploadsUrl}${src}`}
+          src={getAssetsUrl(src)}
           alt=""
           className={classes.slideImage}
         />
       ) : (
-        <Typography variant="h6">Please select slide</Typography>
+        null
       )}
     </div>
   );

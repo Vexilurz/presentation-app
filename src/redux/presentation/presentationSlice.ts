@@ -6,7 +6,6 @@ import {
 import { BoolValue } from '../../types/CommonTypes';
 import {
   createSlide,
-  createSlideImageOnly,
   deleteSlide,
   deleteSlideAudio,
   getPresentation,
@@ -17,7 +16,6 @@ import {
 interface PresentationState {
   presentation: IPresentationResponse;
   selectedSlideId: number;
-  selectedSlide?: ISlideResponse;
   isBusy: BoolValue;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   uploadStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -26,7 +24,6 @@ interface PresentationState {
 const initialState: PresentationState = {
   presentation: {} as IPresentationResponse,
   selectedSlideId: -1,
-  selectedSlide: {} as ISlideResponse,
   isBusy: {value: false},
   status: 'idle',
   uploadStatus: 'idle',
@@ -41,14 +38,14 @@ const presentationSlice = createSlice({
       action: PayloadAction<number>
     ) => {
       state.selectedSlideId = action.payload;
-      state.selectedSlide = state.presentation.slides.find(
-        (slide) => slide.id === state.selectedSlideId
-      );
     },
     setIsBusy: (
       state: PresentationState,
       action: PayloadAction<boolean>
     ) => {
+      if (!state.selectedSlideId) {
+        state.selectedSlideId = state.presentation.slides[0]?.id;
+      }
       state.isBusy = {value: action.payload};
     }
   },
@@ -80,7 +77,7 @@ const presentationSlice = createSlice({
       state.presentation.slides = state.presentation.slides.filter(
         (slide) => slide.id !== deletedSlideId
       );
-      state.selectedSlide = {} as ISlideResponse;
+      state.selectedSlideId = state.presentation.slides[0]?.id;
     });
     builder.addCase(
       updateSlideAudio.fulfilled,

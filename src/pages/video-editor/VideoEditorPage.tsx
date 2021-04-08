@@ -24,6 +24,7 @@ import { ISlideResponse } from '../../types/AixmusicApiTypes';
 import { SlideToolbar } from './SlideToolbar';
 import SlideImg from './SlideImg';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
+import { AddFromPdfButton } from './AddFromPdfButton';
 
 interface Props {}
 
@@ -82,11 +83,7 @@ export const VideoEditorPage = (props: Props) => {
     selectedSlide = state.presentation.slides?.find(
       (slide) => slide.id === state.selectedSlideId
     );
-
-
   }, [state.presentation.slides]);
-
-
 
   return (
     <div className={classes.root}>
@@ -95,9 +92,8 @@ export const VideoEditorPage = (props: Props) => {
           <SlidesView presentationUrl={presentationUrl} />
           <SlidesViewBottomRow presentationUrl={presentationUrl} />
         </Grid>
-        <Grid item md={10} className={classes.workspace}>
-          {state.presentation.id ? (
-            <>
+          {state.presentation.id ? 
+            <Grid item md={10} className={classes.workspace}>
               <SlideToolbar />
               {state.isBusy?.value ? 
                 <div className={classes.message}>
@@ -106,11 +102,20 @@ export const VideoEditorPage = (props: Props) => {
                     Importing presentation...
                   </Typography>                  
                 </div> : 
-                <SlideImg src={selectedSlide?.image} />
+                state.presentation.slides?.length > 0 ?
+                <SlideImg src={selectedSlide?.image} /> :
+                <div className={classes.message}>
+                  <Typography variant="h6">Please select a presentation for upload</Typography>
+                  <AddFromPdfButton 
+                    presentationUrl={presentationUrl}
+                  />
+                </div>
               }
-            </>
-          ) : null}
-        </Grid>
+            </Grid> :
+            <Grid item md={10} className={classes.workspace}>
+              <Typography variant="h6">Please select a presentation (project) url</Typography>
+            </Grid>
+          }
         {state.selectedSlideId ? (
           <EditorBar
             audioUrl={selectedSlide?.audio}
