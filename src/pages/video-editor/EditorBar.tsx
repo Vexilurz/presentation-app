@@ -3,6 +3,8 @@ import {
   BottomNavigationAction,
   createStyles,
   makeStyles,
+  Menu,
+  MenuItem,
   Paper,
   Theme,
 } from '@material-ui/core';
@@ -12,12 +14,14 @@ import StopIcon from '@material-ui/icons/Stop';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import DeleteIcon from '@material-ui/icons/Delete';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 // @ts-ignore
 import MicRecorder from 'mic-recorder-to-mp3';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
 import {
+  deleteSlide,
   deleteSlideAudio,
   updateSlideAudio,
 } from '../../redux/presentation/presentationThunks';
@@ -149,6 +153,26 @@ export default function EditorBar(props: Props): ReactElement {
     );
   };
 
+  // *** Menu ***
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  // @ts-ignore
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleDeleteSlide = () => {
+    handleMenuClose();
+    dispatch(deleteSlide(state.selectedSlideId));
+  }
+  const handleDeleteRecord = async () => {
+    handleMenuClose();
+    await dispatch(deleteSlideAudio(state.selectedSlideId));
+    alert('Slide audio record deleted!');
+  }
+
   return (
     <Paper variant="outlined" className={classes.root}>
       <BottomNavigation
@@ -169,6 +193,24 @@ export default function EditorBar(props: Props): ReactElement {
           icon={playIcon}
           onClick={onPlayClick}
         />
+        {state.selectedSlide?.id ? (
+          <BottomNavigationAction
+            icon={<MoreHorizIcon />}
+            onClick={handleMenuClick}
+          />
+        ) : null}  
+        {state.selectedSlide?.id ? (  
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleDeleteSlide}>Delete slide</MenuItem>
+            <MenuItem onClick={handleDeleteRecord}>Delete audio record</MenuItem>
+          </Menu>
+        ) : null}
       </BottomNavigation>
       {props.audioUrl && props.audioUrl?.length > 0 ? (
         <ReactAudioPlayer
