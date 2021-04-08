@@ -68,9 +68,7 @@ export const VideoPlayerPage = (props: Props) => {
       height: playerContainerRef.current?.clientHeight as number,
       width: playerContainerRef.current?.clientWidth as number
     });
-  }, [history]);
-
-  
+  }, [history]);  
 
   return (
     <Container maxWidth="lg" className={classes.root}>
@@ -82,7 +80,8 @@ export const VideoPlayerPage = (props: Props) => {
             slideshow={state.slideshow}
             audio={getAssetsUrl(state.presentation.audio)}
             height={dimentions.height}
-            width={dimentions.width}
+            width={dimentions.width}       
+            thumbnail={getAssetsUrl(state.presentation.slides[0]?.image)}     
           />
         ) : (
           <CircularProgress color="secondary" />
