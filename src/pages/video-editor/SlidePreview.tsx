@@ -22,8 +22,8 @@ interface Props {
 const StyledBadge = withStyles((theme: Theme) =>
   createStyles({
     badge: {
-      right: 60,
-      top: 30,
+      right: '20%',
+      top: '10%',
       height: 30,
       width: 30,
       borderRadius: '50%',
