@@ -167,7 +167,7 @@ export class AixmusicApi extends HttpClient {
   }
 
   handleRequest (config: AxiosRequestConfig)  {
-    config.headers['Authorization'] = 'bearer ' + this.token;
+    config.headers['Authorization'] = 'Bearer ' + this.token;
     return config;
   }
 
