@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100vh',
     },
     pages: {
-      paddingTop: '1px',
       height: '100%'
     }
   }),

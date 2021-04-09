@@ -1,4 +1,11 @@
-import { Badge, createStyles, Divider, makeStyles, Theme } from '@material-ui/core';
+import {
+  Badge,
+  createStyles,
+  Divider,
+  makeStyles,
+  Theme,
+  withStyles,
+} from '@material-ui/core';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { setSelectedSlideId } from '../../redux/presentation/presentationSlice';
@@ -11,6 +18,18 @@ const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
 interface Props {
   slide: ISlideResponse;
 }
+
+const StyledBadge = withStyles((theme: Theme) =>
+  createStyles({
+    badge: {
+      right: 60,
+      top: 30,
+      height: 30,
+      width: 30,
+      borderRadius: '50%',
+    },
+  })
+)(Badge);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,8 +57,9 @@ export const SlidePreview = (props: Props) => {
   const state = useSelector((state: RootState) => state.presentation);
   const dispatch = useAppDispatch();
   const badgeContent = props.slide.audio ? <MicIcon /> : 0;
+
   return (
-    <Badge badgeContent={badgeContent} color="error" overlap="circle">  
+    <StyledBadge badgeContent={badgeContent} color="error" overlap="circle">
       <div className={classes.root}>
         <img
           src={`${uploadsUrl}${props.slide.image}`}
@@ -47,13 +67,15 @@ export const SlidePreview = (props: Props) => {
           height="100%"
           alt=""
           className={
-            state.selectedSlideId === props.slide.id ? classes.selectedSlide : classes.slide
+            state.selectedSlideId === props.slide.id
+              ? classes.selectedSlide
+              : classes.slide
           }
           onClick={() => {
             dispatch(setSelectedSlideId(props.slide.id));
           }}
         />
       </div>
-    </Badge>
+    </StyledBadge>
   );
 };
