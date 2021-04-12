@@ -13,8 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100vh',
     },
     pages: {
-      paddingTop: '1px',
-      height: 'calc(100% - 65px);'
+      height: '100%'
     }
   }),
 );
@@ -24,7 +23,7 @@ export default function Layout({ children }: Props): ReactElement {
 
   return (
     <div className={classes.contents}>
-      <Navbar/>
+      {/* <Navbar/> */}
       <main className={classes.pages}>
         {children}
       </main>

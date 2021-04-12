@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-const AXIOS_TIMEOUT = 20000;
+const AXIOS_TIMEOUT = 0;
 
 export abstract class HttpClient {
   protected readonly instance: AxiosInstance;

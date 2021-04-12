@@ -1,4 +1,8 @@
 export interface Slideshow {
   img: string;
-  endTime: number
+  endTime: number;
+}
+
+export interface BoolValue {
+  value: boolean;
 }

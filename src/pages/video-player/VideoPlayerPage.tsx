@@ -25,15 +25,8 @@ interface ParamTypes {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-
     playerContainer: {
-      height: '80%',
+      height: '100%',
       width: '100%',
       backgroundColor: theme.palette.common.black,
       display: 'flex',
@@ -56,38 +49,35 @@ export const VideoPlayerPage = (props: Props) => {
   const history = useHistory();
   const state = useSelector((state: RootState) => state.player);
   const dispatch = useAppDispatch();
-  
+
   const playerContainerRef: React.RefObject<HTMLDivElement> = React.createRef();
-  const [dimentions, setDimentions] = useState({height: 0, width: 0})
+  const [dimentions, setDimentions] = useState({ height: 0, width: 0 });
 
   useEffect(() => {
     const api = AixmusicApi.getInstance();
     api.setToken(token);
     dispatch(getPresentation(presentationUrl));
     setDimentions({
-      height: playerContainerRef.current?.clientHeight as number,
-      width: playerContainerRef.current?.clientWidth as number
+      height: playerContainerRef.current?.offsetHeight as number - 20,
+      width: playerContainerRef.current?.offsetWidth as number -  20,
     });
   }, [history]);
 
-  
-
   return (
-    <Container maxWidth="lg" className={classes.root}>
-      <div className={classes.playerContainer} ref={playerContainerRef}>
-        {state.presentation.slides ? (
-          <ReactWebMediaPlayer
-            className={classes.player}
-            title={state.presentation.title}
-            slideshow={state.slideshow}
-            audio={getAssetsUrl(state.presentation.audio)}
-            height={dimentions.height}
-            width={dimentions.width}
-          />
-        ) : (
-          <CircularProgress color="secondary" />
-        )}
-      </div>
-    </Container>
+    <div className={classes.playerContainer} ref={playerContainerRef}>
+      {state.presentation.slides ? (
+        <ReactWebMediaPlayer
+          className={classes.player}
+          title={state.presentation.title}
+          slideshow={state.slideshow}
+          audio={getAssetsUrl(state.presentation.audio)}
+          height={dimentions.height}
+          width={dimentions.width}
+          thumbnail={getAssetsUrl(state.presentation.slides[0]?.image)}
+        />
+      ) : (
+        <CircularProgress color="secondary" />
+      )}
+    </div>
   );
 };

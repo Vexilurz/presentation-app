@@ -3,6 +3,8 @@ import {
   BottomNavigationAction,
   createStyles,
   makeStyles,
+  Menu,
+  MenuItem,
   Paper,
   Theme,
 } from '@material-ui/core';
@@ -12,12 +14,14 @@ import StopIcon from '@material-ui/icons/Stop';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import DeleteIcon from '@material-ui/icons/Delete';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 // @ts-ignore
 import MicRecorder from 'mic-recorder-to-mp3';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
 import {
+  deleteSlide,
   deleteSlideAudio,
   updateSlideAudio,
 } from '../../redux/presentation/presentationThunks';
@@ -26,7 +30,7 @@ import { getAssetsUrl } from '../../lib/assests-helper';
 import ReactAudioPlayer from 'react-audio-player';
 import * as mm from 'music-metadata-browser';
 
-const Mp3Recorder = new MicRecorder({ bitRate: 128 });
+const Mp3Recorder = new MicRecorder({ bitRate: 96 });
 let countRecTimer: NodeJS.Timeout;
 interface Props {
   audioUrl?: string;
@@ -83,7 +87,7 @@ export default function EditorBar(props: Props): ReactElement {
     if (isBlocked) {
       console.log('Recording Permission Denied');
     } else {
-      onDeleteClick();
+      await dispatch(deleteSlideAudio(props.slideId));
       await Mp3Recorder.start();
       setIsRecording(true);
       setRecTimer(0);
@@ -149,9 +153,25 @@ export default function EditorBar(props: Props): ReactElement {
     );
   };
 
-  const onDeleteClick = async () => {
-    await dispatch(deleteSlideAudio(props.slideId));
+  // *** Menu ***
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  // @ts-ignore
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleDeleteSlide = () => {
+    handleMenuClose();
+    dispatch(deleteSlide(state.selectedSlideId));
+  }
+  const handleDeleteRecord = async () => {
+    handleMenuClose();
+    await dispatch(deleteSlideAudio(state.selectedSlideId));
+    alert('Slide audio record deleted!');
+  }
 
   return (
     <Paper variant="outlined" className={classes.root}>
@@ -173,11 +193,24 @@ export default function EditorBar(props: Props): ReactElement {
           icon={playIcon}
           onClick={onPlayClick}
         />
-        <BottomNavigationAction
-          label="Delete"
-          icon={<DeleteIcon />}
-          onClick={onDeleteClick}
-        />
+        {state.selectedSlideId ? (
+          <BottomNavigationAction
+            icon={<MoreHorizIcon />}
+            onClick={handleMenuClick}
+          />
+        ) : null}  
+        {state.selectedSlideId ? (  
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleDeleteSlide}>Delete slide</MenuItem>
+            <MenuItem onClick={handleDeleteRecord}>Delete audio record</MenuItem>
+          </Menu>
+        ) : null}
       </BottomNavigation>
       {props.audioUrl && props.audioUrl?.length > 0 ? (
         <ReactAudioPlayer
