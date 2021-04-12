@@ -29,6 +29,7 @@ import { useAppDispatch } from '../../redux/store';
 import { getAssetsUrl } from '../../lib/assests-helper';
 import ReactAudioPlayer from 'react-audio-player';
 import * as mm from 'music-metadata-browser';
+import { notify } from '../../redux/notification/notificationSlice';
 
 const Mp3Recorder = new MicRecorder({ bitRate: 96 });
 let countRecTimer: NodeJS.Timeout;
@@ -170,7 +171,7 @@ export default function EditorBar(props: Props): ReactElement {
   const handleDeleteRecord = async () => {
     handleMenuClose();
     await dispatch(deleteSlideAudio(state.selectedSlideId));
-    alert('Slide audio record deleted!');
+    dispatch(notify({text: 'Slide audio record deleted!', severity: 'info'}));
   }
 
   return (

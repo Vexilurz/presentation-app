@@ -41,6 +41,7 @@ const playerSlice = createSlice({
       state.status = 'loading';
     });
     builder.addCase(getPresentation.fulfilled, (state, action) => {
+      // @ts-ignore
       state.presentation = action.payload;
       state.slideshow = extractSlideShow(state.presentation.slides);
       state.status = 'succeeded';

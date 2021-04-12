@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-
     player: {
       height: '100%',
       width: '100%',

@@ -55,6 +55,7 @@ const presentationSlice = createSlice({
       state.status = 'loading';
     });
     builder.addCase(getPresentation.fulfilled, (state, action) => {
+      // @ts-ignore
       state.presentation = action.payload;
       state.selectedSlideId = state.presentation.slides[0]?.id;
       state.status = 'succeeded';
@@ -83,10 +84,11 @@ const presentationSlice = createSlice({
       updateSlideAudio.fulfilled,
       (state, action) => {
         const { payload } = action;
-        let slides: ISlideResponse[] = [] as ISlideResponse[];
+        let slides: (ISlideResponse | undefined)[] = [] as ISlideResponse[];
         slides = state.presentation.slides?.map((slide) =>
-          payload.id !== slide.id ? slide : payload
+          payload?.id !== slide.id ? slide : payload
         );
+        // @ts-ignore
         state.presentation.slides = slides;
         console.log('updated')
       }
@@ -95,10 +97,11 @@ const presentationSlice = createSlice({
       deleteSlideAudio.fulfilled,
       (state, action) => {
         const { payload } = action;
-        let slides: ISlideResponse[] = [] as ISlideResponse[];
+        let slides: (ISlideResponse | undefined)[] = [] as ISlideResponse[];
         slides = state.presentation.slides?.map((slide) =>
-          payload.id !== slide.id ? slide : payload
+          payload?.id !== slide.id ? slide : payload
         );
+        // @ts-ignore
         state.presentation.slides = slides;
         console.log('deleted')
       }
@@ -108,7 +111,7 @@ const presentationSlice = createSlice({
       (state, action) => {
         const { payload } = action;
         let slides: ISlideResponse[] = state.presentation.slides ? state.presentation.slides : [] as ISlideResponse[];
-        slides.push(payload);
+        if (payload) slides.push(payload);
         state.presentation.slides = slides;
       }
     );
