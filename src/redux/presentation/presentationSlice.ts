@@ -47,7 +47,14 @@ const presentationSlice = createSlice({
         state.selectedSlideId = state.presentation.slides[0]?.id;
       }
       state.isBusy = {value: action.payload};
-    }
+    },
+    setPresentationSlides: (
+      state: PresentationState,
+      action: PayloadAction<ISlideResponse[]>
+    ) => {
+      const { payload } = action;
+      state.presentation.slides = payload;
+    },
   },
   // Thunk reducers
   extraReducers: (builder) => {
@@ -55,8 +62,9 @@ const presentationSlice = createSlice({
       state.status = 'loading';
     });
     builder.addCase(getPresentation.fulfilled, (state, action) => {
-      // @ts-ignore
-      state.presentation = action.payload;
+      let tmp: IPresentationResponse = action.payload as IPresentationResponse;
+      tmp.slides?.sort((a, b) => a.order > b.order ? 1 : a.order < b.order ? -1 : 0);
+      state.presentation = tmp;
       state.selectedSlideId = state.presentation.slides[0]?.id;
       state.status = 'succeeded';
     });
@@ -118,6 +126,6 @@ const presentationSlice = createSlice({
   },
 });
 
-export const { setSelectedSlideId, setIsBusy } = presentationSlice.actions;
+export const { setSelectedSlideId, setIsBusy, setPresentationSlides } = presentationSlice.actions;
 
 export default presentationSlice.reducer;
