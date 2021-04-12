@@ -70,6 +70,11 @@ export default function EditorBar(props: Props): ReactElement {
   const [isRecording, setIsRecording] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [recTimer, setRecTimer] = useState(0);
+  
+  const getNewRecKey = (): string => {
+    return new Date().toISOString();
+  }
+  const [recKey, setRecKey] = useState(getNewRecKey());
 
   useEffect(() => {
     navigator.mediaDevices
@@ -110,6 +115,7 @@ export default function EditorBar(props: Props): ReactElement {
     );
     clearInterval(countRecTimer);
     setIsRecording(false);
+    setRecKey(getNewRecKey());
   };
 
   const recIcon = isRecording ? <StopIcon /> : <FiberManualRecordIcon />;
@@ -215,6 +221,7 @@ export default function EditorBar(props: Props): ReactElement {
       </BottomNavigation>
       {props.audioUrl && props.audioUrl?.length > 0 ? (
         <ReactAudioPlayer
+          key={recKey}
           src={getAssetsUrl(props.audioUrl as string)}
           controls
           ref={(element) => {
