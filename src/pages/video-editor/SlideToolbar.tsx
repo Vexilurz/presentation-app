@@ -46,7 +46,7 @@ export const SlideToolbar = (props: Props) => {
       <Typography variant="h6" className={classes.title}>
         {state.presentation.title}
       </Typography>
-      <Button        
+      {/* <Button        
         variant="contained"
         color="default"
         className={classes.button}
@@ -60,7 +60,7 @@ export const SlideToolbar = (props: Props) => {
         ) : (
           <></>
         )}
-      </Button>
+      </Button> */}
     </Toolbar>
   );
 };
