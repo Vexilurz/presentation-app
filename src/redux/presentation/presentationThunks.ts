@@ -131,6 +131,25 @@ export const updateSlideAudio = createAsyncThunk(
   }
 );
 
+export const updateSlideOrder = createAsyncThunk(
+  'slide/update/order',
+  async (
+    {
+      slideID,
+      order,
+    }: { slideID: number; order: number },
+    { dispatch }
+  ) => {
+    try {
+      const data = await api.updateSlideOrder(slideID, order);
+      return data;
+    } catch (err) {
+      dispatch(notify({text: 'Update slide order failed.', severity: 'error'}));
+      console.log(err);
+    }
+  }
+);
+
 export const deleteSlideAudio = createAsyncThunk(
   'slide/delete/audio',
   async (slideID: number, { dispatch }) => {
