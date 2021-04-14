@@ -67,7 +67,6 @@ export const PlayerToolbar = ({
       </IconButton>
       <Slider
         className={classes.slider}
-        // value={(currentTime / totalTime) * 100}
         value={progress}
         onChange={(event: any, newValue: number | number[]) => {
           setIsDND(true);
@@ -75,7 +74,8 @@ export const PlayerToolbar = ({
         }}
         onChangeCommitted={(event: any, newValue: number | number[]) => {
           setIsDND(false);
-          setCurrentTime(((newValue as number) * totalTime) / 100);
+          const tmp = (newValue as number) > 99.8 ? 99.9 : (newValue as number);
+          setCurrentTime((tmp * totalTime) / 100);
         }}
         aria-labelledby="continuous-slider"
         color="secondary"
