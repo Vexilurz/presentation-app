@@ -29,6 +29,7 @@ import { useAppDispatch } from '../../redux/store';
 import { getAssetsUrl } from '../../lib/assests-helper';
 import ReactAudioPlayer from 'react-audio-player';
 import * as mm from 'music-metadata-browser';
+import { notify } from '../../redux/notification/notificationSlice';
 
 const Mp3Recorder = new MicRecorder({ bitRate: 96 });
 let countRecTimer: NodeJS.Timeout;
@@ -69,6 +70,11 @@ export default function EditorBar(props: Props): ReactElement {
   const [isRecording, setIsRecording] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [recTimer, setRecTimer] = useState(0);
+  
+  const getNewRecKey = (): string => {
+    return new Date().toISOString();
+  }
+  const [recKey, setRecKey] = useState(getNewRecKey());
 
   useEffect(() => {
     navigator.mediaDevices
@@ -87,6 +93,7 @@ export default function EditorBar(props: Props): ReactElement {
     if (isBlocked) {
       console.log('Recording Permission Denied');
     } else {
+      
       await dispatch(deleteSlideAudio(props.slideId));
       await Mp3Recorder.start();
       setIsRecording(true);
@@ -109,6 +116,7 @@ export default function EditorBar(props: Props): ReactElement {
     );
     clearInterval(countRecTimer);
     setIsRecording(false);
+    setRecKey(getNewRecKey());
   };
 
   const recIcon = isRecording ? <StopIcon /> : <FiberManualRecordIcon />;
@@ -170,7 +178,7 @@ export default function EditorBar(props: Props): ReactElement {
   const handleDeleteRecord = async () => {
     handleMenuClose();
     await dispatch(deleteSlideAudio(state.selectedSlideId));
-    alert('Slide audio record deleted!');
+    dispatch(notify({text: 'Slide audio record deleted!', severity: 'info'}));
   }
 
   return (
@@ -214,7 +222,9 @@ export default function EditorBar(props: Props): ReactElement {
       </BottomNavigation>
       {props.audioUrl && props.audioUrl?.length > 0 ? (
         <ReactAudioPlayer
-          src={getAssetsUrl(props.audioUrl as string)}
+          id={recKey}
+          key={recKey}
+          src={getAssetsUrl(props.audioUrl as string)+`?key=${recKey}`}
           controls
           ref={(element) => {
             audioEl = element?.audioEl as React.RefObject<HTMLAudioElement>;
@@ -226,6 +236,7 @@ export default function EditorBar(props: Props): ReactElement {
             setPlayLabel('Play');
           }}
           style={{ display: 'none' }}
+          
         />
       ) : null}
     </Paper>

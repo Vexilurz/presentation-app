@@ -52,12 +52,9 @@ export default function PdfReader(data: Uint8Array, presentationUrl: string){
       // const image = canvas?.toDataURL('image/png');
 
       getCanvasBlob(canvas).then(async (blob) => {
-        // @ts-ignore
-        // await api.createSlide(presentationUrl, {audio: null, duration: 1, order: 1, image: blob}); 
-        // await api.createSlideImageOnly(presentationUrl, blob);  
         await store.dispatch(createSlide({url: presentationUrl, 
           // @ts-ignore
-          dto: {audio: null, duration: 1, order: 1, image: blob}}));
+          dto: {audio: null, duration: 1, order: 99999, image: blob}}));
         // await store.dispatch(createSlideImageOnly({url: presentationUrl, image: blob}));
         if (pdf && currentPage < pdf.numPages) {
           currentPage++;

@@ -15,6 +15,7 @@ import { getPresentation } from '../../redux/presentation/presentationThunks';
 import { useAppDispatch } from '../../redux/store';
 import { getAssetsUrl } from '../../lib/assests-helper';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
+import { PresentationPlayer } from './PresentationPlayer';
 
 interface Props {}
 
@@ -34,7 +35,6 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-
     player: {
       height: '100%',
       width: '100%',
@@ -66,15 +66,7 @@ export const VideoPlayerPage = (props: Props) => {
   return (
     <div className={classes.playerContainer} ref={playerContainerRef}>
       {state.presentation.slides ? (
-        <ReactWebMediaPlayer
-          className={classes.player}
-          title={state.presentation.title}
-          slideshow={state.slideshow}
-          audio={getAssetsUrl(state.presentation.audio)}
-          height={dimentions.height}
-          width={dimentions.width}
-          thumbnail={getAssetsUrl(state.presentation.slides[0]?.image)}
-        />
+        <PresentationPlayer className={classes.player}  slideshow={state.slideshow}/>
       ) : (
         <CircularProgress color="secondary" />
       )}

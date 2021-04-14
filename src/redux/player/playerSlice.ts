@@ -23,10 +23,15 @@ const extractSlideShow = (slides: ISlideResponse[]): Slideshow[] => {
   let durectionAcc = 0;
   const defaultSlideDuration = 5;
   return slides.map((slide) => {
-    durectionAcc += slide.audio.length > 0 ? slide.duration : defaultSlideDuration;
+    durectionAcc +=
+      slide.audio.length > 0 ? slide.duration : defaultSlideDuration;
     return {
       img: getAssetsUrl(slide.image),
       endTime: durectionAcc,
+      audio:
+        slide.audio.length > 0
+          ? getAssetsUrl(slide.audio)
+          : '/mp3/blank.mp3',
     };
   });
 };
@@ -41,6 +46,7 @@ const playerSlice = createSlice({
       state.status = 'loading';
     });
     builder.addCase(getPresentation.fulfilled, (state, action) => {
+      // @ts-ignore
       state.presentation = action.payload;
       state.slideshow = extractSlideShow(state.presentation.slides);
       state.status = 'succeeded';

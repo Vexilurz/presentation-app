@@ -47,7 +47,14 @@ const presentationSlice = createSlice({
         state.selectedSlideId = state.presentation.slides[0]?.id;
       }
       state.isBusy = {value: action.payload};
-    }
+    },
+    setPresentationSlides: (
+      state: PresentationState,
+      action: PayloadAction<ISlideResponse[]>
+    ) => {
+      const { payload } = action;
+      state.presentation.slides = payload;
+    },
   },
   // Thunk reducers
   extraReducers: (builder) => {
@@ -55,7 +62,9 @@ const presentationSlice = createSlice({
       state.status = 'loading';
     });
     builder.addCase(getPresentation.fulfilled, (state, action) => {
-      state.presentation = action.payload;
+      let tmp: IPresentationResponse = action.payload as IPresentationResponse;
+      tmp.slides?.sort((a, b) => a.order > b.order ? 1 : a.order < b.order ? -1 : 0);
+      state.presentation = tmp;
       state.selectedSlideId = state.presentation.slides[0]?.id;
       state.status = 'succeeded';
     });
@@ -83,10 +92,11 @@ const presentationSlice = createSlice({
       updateSlideAudio.fulfilled,
       (state, action) => {
         const { payload } = action;
-        let slides: ISlideResponse[] = [] as ISlideResponse[];
+        let slides: (ISlideResponse | undefined)[] = [] as ISlideResponse[];
         slides = state.presentation.slides?.map((slide) =>
-          payload.id !== slide.id ? slide : payload
+          payload?.id !== slide.id ? slide : payload
         );
+        // @ts-ignore
         state.presentation.slides = slides;
         console.log('updated')
       }
@@ -95,10 +105,11 @@ const presentationSlice = createSlice({
       deleteSlideAudio.fulfilled,
       (state, action) => {
         const { payload } = action;
-        let slides: ISlideResponse[] = [] as ISlideResponse[];
+        let slides: (ISlideResponse | undefined)[] = [] as ISlideResponse[];
         slides = state.presentation.slides?.map((slide) =>
-          payload.id !== slide.id ? slide : payload
+          payload?.id !== slide.id ? slide : payload
         );
+        // @ts-ignore
         state.presentation.slides = slides;
         console.log('deleted')
       }
@@ -108,13 +119,13 @@ const presentationSlice = createSlice({
       (state, action) => {
         const { payload } = action;
         let slides: ISlideResponse[] = state.presentation.slides ? state.presentation.slides : [] as ISlideResponse[];
-        slides.push(payload);
+        if (payload) slides.push(payload);
         state.presentation.slides = slides;
       }
     );
   },
 });
 
-export const { setSelectedSlideId, setIsBusy } = presentationSlice.actions;
+export const { setSelectedSlideId, setIsBusy, setPresentationSlides } = presentationSlice.actions;
 
 export default presentationSlice.reducer;
