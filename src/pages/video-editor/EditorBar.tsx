@@ -93,6 +93,7 @@ export default function EditorBar(props: Props): ReactElement {
     if (isBlocked) {
       console.log('Recording Permission Denied');
     } else {
+      
       await dispatch(deleteSlideAudio(props.slideId));
       await Mp3Recorder.start();
       setIsRecording(true);
@@ -223,7 +224,7 @@ export default function EditorBar(props: Props): ReactElement {
         <ReactAudioPlayer
           id={recKey}
           key={recKey}
-          src={getAssetsUrl(props.audioUrl as string)}
+          src={getAssetsUrl(props.audioUrl as string)+`?key=${recKey}`}
           controls
           ref={(element) => {
             audioEl = element?.audioEl as React.RefObject<HTMLAudioElement>;
@@ -235,6 +236,7 @@ export default function EditorBar(props: Props): ReactElement {
             setPlayLabel('Play');
           }}
           style={{ display: 'none' }}
+          
         />
       ) : null}
     </Paper>

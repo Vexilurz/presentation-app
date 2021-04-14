@@ -69,6 +69,8 @@ export const PresentationPlayer = ({ className, slideshow }: Props) => {
         }}
         controls
         autoPlay={playing}
+        preload="auto"
+        style={{ display: 'none' }}
       />
       <PlayerToolbar
         currentTime={currentTime}
