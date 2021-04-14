@@ -221,6 +221,7 @@ export default function EditorBar(props: Props): ReactElement {
       </BottomNavigation>
       {props.audioUrl && props.audioUrl?.length > 0 ? (
         <ReactAudioPlayer
+          id={recKey}
           key={recKey}
           src={getAssetsUrl(props.audioUrl as string)}
           controls
