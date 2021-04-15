@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactAudioPlayer from 'react-audio-player';
+import { FullScreen, useFullScreenHandle } from 'react-full-screen';
 import { Slideshow } from '../../types/CommonTypes';
 import { PlayerOverlay } from './PlayerOverlay';
 import { PlayerToolbar } from './PlayerToolbar';
@@ -9,15 +10,23 @@ interface Props {
   slideshow: Slideshow[];
   presentationTitle: string;
   className: any;
+  whileLabel?: WhiteLabel
+}
+
+export interface WhiteLabel {
+  src: string;
+  href: string;
 }
 
 export const PresentationPlayer = ({
   className,
   slideshow,
   presentationTitle,
+  whileLabel
 }: Props) => {
   // Maybe join to one state obj?
   const [playing, setPlaying] = useState(false);
+  const [volumeValue, setVolumeValue] = useState(100);
   const [currentTime, setCurrentTime] = useState(0);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(
@@ -25,7 +34,9 @@ export const PresentationPlayer = ({
   );
   const [isOverlayShowed, setOverlayShowed] = useState(true);
 
-  let audioEl = React.createRef<HTMLAudioElement>();
+  const [audioEl, setAudioEl] = useState(React.createRef<HTMLAudioElement>());
+  const [fullScreen, setFullScreen] = useState(false);
+  const handle = useFullScreenHandle();
 
   useEffect(() => {
     setCurrentSlide(slideshow[currentSlideIndex]);
@@ -40,10 +51,14 @@ export const PresentationPlayer = ({
     else audioEl.current?.pause();
   }, [playing, audioEl]);
 
+  useEffect(() => {
+    if (fullScreen) handle.enter();
+    else if (handle.active) handle.exit();
+  }, [fullScreen]);
+
   const totalTime = slideshow.reduce((acc, slide) => slide.endTime, 0);
 
   const handleCurrentTimeUpdate = (newTime: number) => {
-    // TODO: HANDLE -1
     const newSlideIndex = slideshow.findIndex(
       (slide) => newTime < slide.endTime
     );
@@ -51,15 +66,15 @@ export const PresentationPlayer = ({
     setCurrentSlideIndex(newSlideIndex);
     setCurrentTime(newTime);
 
-    if (audioEl?.current) {
+    if (audioEl && audioEl.current) {
       audioEl.current.currentTime =
-        audioEl.current?.duration - (currentSlide.endTime - newTime);
-      if (!playing) audioEl.current?.pause();
+        audioEl.current.duration - (currentSlide.endTime - newTime);
+      if (!playing) audioEl.current.pause();
     }
   };
 
   return (
-    <div className={className}>
+    <FullScreen handle={handle} className={className}>
       <PlayerOverlay
         presentationTitle={presentationTitle}
         isShowed={isOverlayShowed}
@@ -74,7 +89,8 @@ export const PresentationPlayer = ({
         key={'audio-' + currentSlideIndex}
         src={currentSlide.audio}
         ref={(element) => {
-          audioEl = element?.audioEl as React.RefObject<HTMLAudioElement>;
+          const ref = element?.audioEl as React.RefObject<HTMLAudioElement>;
+          setAudioEl(ref);
         }}
         onEnded={() => {
           if (currentSlideIndex === slideshow.length - 1) {
@@ -92,17 +108,23 @@ export const PresentationPlayer = ({
         controls
         autoPlay={playing}
         preload="auto"
+        volume={volumeValue / 100}
         style={{ display: 'none' }}
       />
       {!isOverlayShowed ? (
         <PlayerToolbar
+          whileLabel={whileLabel}
+          volumeValue={volumeValue}
+          setVolumeValue={setVolumeValue}
           currentTime={currentTime}
           totalTime={totalTime}
           setCurrentTime={handleCurrentTimeUpdate}
           playing={playing}
           setPlaying={setPlaying}
+          fullScreen={fullScreen}
+          setFullScreen={setFullScreen}
         />
       ) : null}
-    </div>
+    </FullScreen>
   );
 };

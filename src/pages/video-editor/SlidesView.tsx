@@ -4,10 +4,9 @@ import {
   makeStyles,
   Theme,
 } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import PdfReader from '../../lib/pdf/PdfReader';
 import {
   getPresentation,
   updateSlideOrder,

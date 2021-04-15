@@ -1,22 +1,15 @@
 import {
   CircularProgress,
-  Container,
   createStyles,
   Grid,
   makeStyles,
   Theme,
   Typography,
 } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  deleteSlide,
-  getPresentation,
-} from '../../redux/presentation/presentationThunks';
 import { RootState } from '../../redux/rootReducer';
-import store, { useAppDispatch } from '../../redux/store';
-import Paper from '@material-ui/core/Paper';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { SlidesView } from './SlidesView';
 import EditorBar from './EditorBar';
 import { SlidesViewBottomRow } from './SlidesViewBottomRow';
@@ -92,30 +85,32 @@ export const VideoEditorPage = (props: Props) => {
           <SlidesView presentationUrl={presentationUrl} />
           <SlidesViewBottomRow presentationUrl={presentationUrl} />
         </Grid>
-          {state.presentation.id ? 
-            <Grid item md={10} className={classes.workspace}>
-              <SlideToolbar />
-              {state.isBusy?.value ? 
-                <div className={classes.message}>
-                  <CircularProgress color="secondary" style={{margin:10}}/>
-                  <Typography variant="h6">
-                    Importing presentation...
-                  </Typography>                  
-                </div> : 
-                state.presentation.slides?.length > 0 ?
-                <SlideImg src={selectedSlide?.image} /> :
-                <div className={classes.message}>
-                  <Typography variant="h6">Please select a presentation for upload</Typography>
-                  <AddFromPdfButton 
-                    presentationUrl={presentationUrl}
-                  />
-                </div>
-              }
-            </Grid> :
-            <Grid item md={10} className={classes.workspace}>
-              <Typography variant="h6">Please select a presentation (project) url</Typography>
-            </Grid>
-          }
+        {state.presentation.id ? (
+          <Grid item md={10} className={classes.workspace}>
+            <SlideToolbar />
+            {state.isBusy?.value ? (
+              <div className={classes.message}>
+                <CircularProgress color="secondary" style={{ margin: 10 }} />
+                <Typography variant="h6">Importing presentation...</Typography>
+              </div>
+            ) : state.presentation.slides?.length > 0 ? (
+              <SlideImg src={selectedSlide?.image} />
+            ) : (
+              <div className={classes.message}>
+                <Typography variant="h6">
+                  Please select a presentation for upload
+                </Typography>
+                <AddFromPdfButton presentationUrl={presentationUrl} />
+              </div>
+            )}
+          </Grid>
+        ) : (
+          <Grid item md={10} className={classes.workspace}>
+            <Typography variant="h6">
+              Please select a presentation (project) url
+            </Typography>
+          </Grid>
+        )}
         {state.selectedSlideId ? (
           <EditorBar
             audioUrl={selectedSlide?.audio}

@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import React, { ReactElement } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
@@ -7,8 +7,6 @@ import { getAssetsUrl } from '../../lib/assests-helper';
 interface Props {
   src?: string | undefined;
 }
-
-const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -8,16 +8,14 @@ import {
   Paper,
   Theme,
 } from '@material-ui/core';
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import StopIcon from '@material-ui/icons/Stop';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 // @ts-ignore
 import MicRecorder from 'mic-recorder-to-mp3';
-import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
 import {
@@ -59,7 +57,6 @@ export default function EditorBar(props: Props): ReactElement {
   const dispatch = useAppDispatch();
   const state = useSelector((state: RootState) => state.presentation);
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
 
   function fmtMSS(s: any) {
     return (s - (s %= 60)) / 60 + (9 < s ? ':' : ':0') + s;

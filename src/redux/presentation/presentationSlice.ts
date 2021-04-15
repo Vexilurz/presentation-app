@@ -98,7 +98,6 @@ const presentationSlice = createSlice({
         );
         // @ts-ignore
         state.presentation.slides = slides;
-        console.log('updated')
       }
     );
     builder.addCase(
@@ -111,7 +110,6 @@ const presentationSlice = createSlice({
         );
         // @ts-ignore
         state.presentation.slides = slides;
-        console.log('deleted')
       }
     );
     builder.addCase(
