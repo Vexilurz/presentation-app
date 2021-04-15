@@ -10,7 +10,7 @@ const useStyles = (props: { isOverlayShowed: boolean }) =>
   makeStyles((theme: Theme) =>
     createStyles({
       slideImageContainer: {
-        height: props.isOverlayShowed ? '100%' : 'calc(100% - 92px)',
+        height: props.isOverlayShowed ? '100%' : 'calc(100% - 64px)',
         backgroundColor: theme.palette.grey[100],
       },
       slideImage: {

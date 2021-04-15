@@ -13,7 +13,6 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import VolumeUp from '@material-ui/icons/VolumeUp';
 import Fullscreen from '@material-ui/icons/Fullscreen';
-import { WhiteLabel } from './PresentationPlayer';
 
 interface Props {
   currentTime: number;
@@ -25,7 +24,7 @@ interface Props {
   setVolumeValue: (volume: number) => void;
   fullScreen: boolean;
   setFullScreen: (fullScreen: boolean) => void;
-  whileLabel?: WhiteLabel;
+  whileLabel?: string;
 }
 
 function fmtMSS(s: any) {
@@ -46,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     volumeIcon: {
       marginLeft: theme.spacing(1),
-      fontSize: '30px',
+      fontSize: '25px',
       color: theme.palette.grey[600],
     },
     volumeSlider: {
@@ -56,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     buttonsRow: {
       width: '100%',
-      height: '50px',
+      height: '15px',
       display: 'flex',
       alignItems: 'center',
       paddingBottom: theme.spacing(1),
@@ -71,18 +70,18 @@ const useStyles = makeStyles((theme: Theme) =>
 const PrettoSlider = withStyles({
   root: {
     color: '#52af77',
-    height: 8,
+    height: 4,
   },
   thumb: {
     display: 'none',
   },
   active: {},
   track: {
-    height: 8,
+    height: 4,
     borderRadius: 4,
   },
   rail: {
-    height: 8,
+    height: 4,
     borderRadius: 4,
   },
 })(Slider);
@@ -101,9 +100,9 @@ export const PlayerToolbar = ({
 }: Props) => {
   const classes = useStyles();
   const playIcon = playing ? (
-    <PauseIcon fontSize="large" />
+    <PauseIcon/>
   ) : (
-    <PlayArrowIcon fontSize="large" />
+    <PlayArrowIcon/>
   );
   const [progress, setProgress] = useState(0);
   const [isDND, setIsDND] = useState(false);
@@ -132,6 +131,7 @@ export const PlayerToolbar = ({
       <div className={classes.buttonsRow}>
         <IconButton
           aria-label="paly/stop"
+          size="small"
           onClick={() => {
             setPlaying(!playing);
           }}
@@ -148,21 +148,24 @@ export const PlayerToolbar = ({
           }}
           aria-labelledby="continuous-slider"
         />
-        <Typography variant="h6">{`${fmtMSS(currentTime.toFixed(0))}/${fmtMSS(
+        <Typography variant="body2">{`${fmtMSS(currentTime.toFixed(0))}/${fmtMSS(
           totalTime.toFixed(0)
         )}`}</Typography>
         <div className={classes.whiteLabelContainer}>
-          <a href={whileLabel?.href}>
-            <img height="40" src={whileLabel?.src} alt="" />
-          </a>
+          {whileLabel === '1' ? (
+            <a href={process.env.REACT_APP_WHILE_LABEL_SRC}>
+              <img height="40" src={process.env.REACT_APP_WHILE_LABEL_HREF} alt="" />
+            </a>
+          ) : null}
         </div>
         <IconButton
           aria-label="fullscreen"
+          size="small"
           onClick={() => {
             setFullScreen(!fullScreen);
           }}
         >
-          <Fullscreen fontSize="large" />
+          <Fullscreen />
         </IconButton>
       </div>
     </Toolbar>

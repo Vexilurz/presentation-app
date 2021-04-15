@@ -11,6 +11,7 @@ export interface IPresentationResponse {
   updatedAt: string,
   audio: string,
   slides: ISlideResponse[], // slides don't exist when creating presentation
+  whitelabel: string,
 }
 
 export interface ISlideResponse {

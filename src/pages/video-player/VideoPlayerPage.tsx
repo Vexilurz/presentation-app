@@ -61,7 +61,7 @@ export const VideoPlayerPage = (props: Props) => {
           className={classes.player}
           slideshow={state.slideshow}
           presentationTitle={state.presentation.title}
-          whileLabel={{src: "", href: ""}}
+          whileLabel={state.presentation.whitelabel}
         />
       ) : (
         <CircularProgress color="secondary" />

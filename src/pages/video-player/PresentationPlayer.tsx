@@ -10,12 +10,7 @@ interface Props {
   slideshow: Slideshow[];
   presentationTitle: string;
   className: any;
-  whileLabel?: WhiteLabel
-}
-
-export interface WhiteLabel {
-  src: string;
-  href: string;
+  whileLabel?: string;
 }
 
 export const PresentationPlayer = ({
