@@ -185,7 +185,6 @@ export const uploadPresentation = createAsyncThunk(
         return res.blob();
       });
       const blobs = await Promise.all(proms);
-      console.log(blobs);
       const blob = new Blob([...blobs]);
       const res = await api.updatePresentation(presentation.url, {
         audio: blob,

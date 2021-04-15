@@ -62,7 +62,6 @@ export const PresentationPlayer = ({
     const newSlideIndex = slideshow.findIndex(
       (slide) => newTime < slide.endTime
     );
-    console.log(newTime, newSlideIndex);
     setCurrentSlideIndex(newSlideIndex);
     setCurrentTime(newTime);
 
