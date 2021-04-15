@@ -17,7 +17,6 @@ interface Props {
   setCurrentTime: (time: number) => void;
   playing: boolean;
   setPlaying: (playing: boolean) => void;
-  audioRef: React.RefObject<HTMLAudioElement>;
 }
 
 function fmtMSS(s: any) {
@@ -39,7 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export const PlayerToolbar = ({
   currentTime,
   setCurrentTime,
-  audioRef,
   playing,
   setPlaying,
   totalTime,
@@ -59,8 +57,6 @@ export const PlayerToolbar = ({
         aria-label="delete"
         onClick={() => {
           setPlaying(!playing);
-          if (!playing) audioRef.current?.play();
-          else audioRef.current?.pause();
         }}
       >
         {playIcon}

@@ -58,15 +58,19 @@ export const VideoPlayerPage = (props: Props) => {
     api.setToken(token);
     dispatch(getPresentation(presentationUrl));
     setDimentions({
-      height: playerContainerRef.current?.offsetHeight as number - 20,
-      width: playerContainerRef.current?.offsetWidth as number -  20,
+      height: (playerContainerRef.current?.offsetHeight as number) - 20,
+      width: (playerContainerRef.current?.offsetWidth as number) - 20,
     });
   }, [history]);
 
   return (
     <div className={classes.playerContainer} ref={playerContainerRef}>
       {state.presentation.slides ? (
-        <PresentationPlayer className={classes.player}  slideshow={state.slideshow}/>
+        <PresentationPlayer
+          className={classes.player}
+          slideshow={state.slideshow}
+          presentationTitle={state.presentation.title}
+        />
       ) : (
         <CircularProgress color="secondary" />
       )}
