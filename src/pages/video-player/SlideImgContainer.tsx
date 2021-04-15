@@ -3,27 +3,29 @@ import React from 'react';
 
 interface Props {
   src: string;
+  isOverlayShowed: boolean;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    slideImageContainer: {
-      height: 'calc(100% - 64px)',
-      backgroundColor: theme.palette.grey[100],
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    slideImage: {
-      margin: '30px 0',
-    },
-  })
-);
+const useStyles = (props: { isOverlayShowed: boolean }) =>
+  makeStyles((theme: Theme) =>
+    createStyles({
+      slideImageContainer: {
+        height: props.isOverlayShowed ? '100%' : 'calc(100% - 92px)',
+        backgroundColor: theme.palette.grey[100],
+      },
+      slideImage: {
+        height: '100%',
+        display: 'block',
+        margin: '0 auto',
+      },
+    })
+  );
 
-export const SlideImgContainer = ({ src }: Props) => {
-  const classes = useStyles();
+export const SlideImgContainer = ({ src, isOverlayShowed }: Props) => {
+  const classes = useStyles({ isOverlayShowed })();
   return (
     <div className={classes.slideImageContainer}>
-      <img src={src} alt="" />
+      <img className={classes.slideImage} src={src} alt="" />
     </div>
   );
 };

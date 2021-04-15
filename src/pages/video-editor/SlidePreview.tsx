@@ -1,7 +1,6 @@
 import {
   Badge,
   createStyles,
-  Divider,
   makeStyles,
   Theme,
   withStyles,

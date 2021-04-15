@@ -1,19 +1,15 @@
 import {
   CircularProgress,
-  Container,
   createStyles,
   makeStyles,
   Theme,
 } from '@material-ui/core';
-// @ts-ignore
-import ReactWebMediaPlayer from 'react-web-media-player';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
 import { getPresentation } from '../../redux/presentation/presentationThunks';
 import { useAppDispatch } from '../../redux/store';
-import { getAssetsUrl } from '../../lib/assests-helper';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { PresentationPlayer } from './PresentationPlayer';
 
@@ -51,22 +47,22 @@ export const VideoPlayerPage = (props: Props) => {
   const dispatch = useAppDispatch();
 
   const playerContainerRef: React.RefObject<HTMLDivElement> = React.createRef();
-  const [dimentions, setDimentions] = useState({ height: 0, width: 0 });
 
   useEffect(() => {
     const api = AixmusicApi.getInstance();
     api.setToken(token);
     dispatch(getPresentation(presentationUrl));
-    setDimentions({
-      height: playerContainerRef.current?.offsetHeight as number - 20,
-      width: playerContainerRef.current?.offsetWidth as number -  20,
-    });
   }, [history]);
 
   return (
     <div className={classes.playerContainer} ref={playerContainerRef}>
       {state.presentation.slides ? (
-        <PresentationPlayer className={classes.player}  slideshow={state.slideshow}/>
+        <PresentationPlayer
+          className={classes.player}
+          slideshow={state.slideshow}
+          presentationTitle={state.presentation.title}
+          whileLabel={{src: "", href: ""}}
+        />
       ) : (
         <CircularProgress color="secondary" />
       )}

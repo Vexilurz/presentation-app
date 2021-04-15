@@ -6,8 +6,6 @@ import {
   IUpdatePresentationDTO,
   IUpdateSlideDTO,
 } from '../../types/AixmusicDTOTypes';
-// @ts-ignore
-import Crunker from 'crunker';
 import { extractAudioUrls } from '../../lib/audio-concat';
 import { IPresentationResponse } from '../../types/AixmusicApiTypes';
 import { notify } from '../notification/notificationSlice';
@@ -167,7 +165,7 @@ export const deleteSlide = createAsyncThunk(
   'slide/delete',
   async (slideID: number, { dispatch }) => {
     try {
-      const data = await api.deleteSlide(slideID);
+      await api.deleteSlide(slideID);
       dispatch(notify({text: 'Slide deleted!', severity: 'info'}));
       return slideID;
     } catch (err) {      
@@ -181,19 +179,12 @@ export const uploadPresentation = createAsyncThunk(
   'presentation/upload',
   async (presentation: IPresentationResponse, { dispatch }) => {
     try {
-      // const crunker = new Crunker();
-      // const audioUrls = extractAudioUrls(presentation);
-      // let buffers = await crunker.fetchAudio(...audioUrls);
-      // let concated = await crunker.concatAudio(buffers);
-      // let output = await crunker.export(concated, 'audio/mp3');
-
       const audioUrls = extractAudioUrls(presentation);
       const proms = audioUrls.map(async (uri) => {
         const res = await fetch(uri.toString(), { cache: 'no-cache' });
         return res.blob();
       });
       const blobs = await Promise.all(proms);
-      console.log(blobs);
       const blob = new Blob([...blobs]);
       const res = await api.updatePresentation(presentation.url, {
         audio: blob,

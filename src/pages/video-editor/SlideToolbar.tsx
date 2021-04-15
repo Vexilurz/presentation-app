@@ -1,6 +1,4 @@
 import {
-  Button,
-  CircularProgress,
   createStyles,
   makeStyles,
   Theme,
@@ -8,11 +6,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
-import DeleteIcon from '@material-ui/icons/Delete';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { uploadPresentation } from '../../redux/presentation/presentationThunks';
 
 interface Props {}
 
@@ -36,10 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const SlideToolbar = (props: Props) => {
   const state = useSelector((state: RootState) => state.presentation);
-  const dispatch = useDispatch();
   const classes = useStyles();
-
-  const uploadInProcess = state.uploadStatus === 'loading';
 
   return (
     <Toolbar className={classes.root}>
