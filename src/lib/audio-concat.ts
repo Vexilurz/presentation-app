@@ -1,8 +1,6 @@
 import { IPresentationResponse } from '../types/AixmusicApiTypes';
 import { getAssetsUrl } from './assests-helper';
 
-const uploadsUrl = process.env.REACT_APP_UPLOADS_URL as string;
-
 export const extractAudioUrls = (presentation: IPresentationResponse) => {
   const result: String[] = [];
   const defaultUrl = '/mp3/blank.mp3';

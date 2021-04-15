@@ -1,14 +1,9 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
 import store from '../../redux/store';
-
-
 // @ts-ignore
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
 import * as pdfjsLib  from 'pdfjs-dist'; 
-import { useAppDispatch } from '../../redux/store';
-import { createSlide, createSlideImageOnly } from '../../redux/presentation/presentationThunks';
-import { AixmusicApi } from '../aixmusic-api/AixmusicApi';
+import { createSlide } from '../../redux/presentation/presentationThunks';
 import { setIsBusy } from '../../redux/presentation/presentationSlice';
 
 // @ts-ignore
@@ -33,8 +28,6 @@ export default function PdfReader(data: Uint8Array, presentationUrl: string){
     pdf && pdf.getPage(pageNum).then(async function(page) {
       const viewport = page.getViewport({scale: 1.5});
       const canvas = document.createElement('canvas');
-      // const canvas = document.getElementById('canvas');
-      // console.log(canvas)
       // @ts-ignore
       canvas.height = viewport.height;
       // @ts-ignore
@@ -47,18 +40,10 @@ export default function PdfReader(data: Uint8Array, presentationUrl: string){
       const renderTask =  page.render(renderContext);
       await renderTask.promise;
 
-      // debug:
-       // @ts-ignore
-      // const image = canvas?.toDataURL('image/png');
-
       getCanvasBlob(canvas).then(async (blob) => {
-        // @ts-ignore
-        // await api.createSlide(presentationUrl, {audio: null, duration: 1, order: 1, image: blob}); 
-        // await api.createSlideImageOnly(presentationUrl, blob);  
         await store.dispatch(createSlide({url: presentationUrl, 
           // @ts-ignore
-          dto: {audio: null, duration: 1, order: 1, image: blob}}));
-        // await store.dispatch(createSlideImageOnly({url: presentationUrl, image: blob}));
+          dto: {audio: null, duration: 1, order: 99999, image: blob}}));
         if (pdf && currentPage < pdf.numPages) {
           currentPage++;
           renderPage(currentPage, pdf);
