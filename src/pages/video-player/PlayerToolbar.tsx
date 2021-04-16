@@ -152,9 +152,9 @@ export const PlayerToolbar = ({
           totalTime.toFixed(0)
         )}`}</Typography>
         <div className={classes.whiteLabelContainer}>
-          {whileLabel === '1' ? (
+          {whileLabel === '0' ? (
             <a href={process.env.REACT_APP_WHILE_LABEL_SRC}>
-              <img height="40" src={process.env.REACT_APP_WHILE_LABEL_HREF} alt="" />
+              <img height="25" src={process.env.REACT_APP_WHILE_LABEL_HREF} alt="" />
             </a>
           ) : null}
         </div>

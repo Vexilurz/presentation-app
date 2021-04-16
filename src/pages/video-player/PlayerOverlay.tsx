@@ -23,7 +23,6 @@ const ColorButton = withStyles((theme: Theme) => ({
     width: '68px',
     height: '48px',
     borderRadius: '28%',
-    marginBottom:'auto'
   },
 }))(IconButton);
 
@@ -32,16 +31,18 @@ const useStyles = makeStyles((theme: Theme) =>
     modalContainer: {
       display: 'flex',
       height: '100%',
-      flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
     },
     presentationTitle: {
       alignSelf: 'flex-start',
-      marginBottom: 'auto',
       padding: theme.spacing(2),
+      width: '100%',
       color: theme.palette.primary.main,
     },
+    buttonContainer: {
+      width: '100%',
+    }
   })
 );
 
@@ -66,13 +67,15 @@ export const PlayerOverlay = ({
         >
           {presentationTitle}
         </Typography>
-        <ColorButton
-          onClick={() => {
-            setIsShowed(!isShowed);
-          }}
-        >
-          <PlayArrowIcon fontSize="large" />
-        </ColorButton>
+        <div className={classes.buttonContainer}>
+          <ColorButton
+            onClick={() => {
+              setIsShowed(!isShowed);
+            }}
+          >
+            <PlayArrowIcon fontSize="large" />
+          </ColorButton>
+        </div>
       </div>
     </Modal>
   );
