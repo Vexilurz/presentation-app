@@ -4,11 +4,17 @@ import {
   ICreatePresentationDTO,
   ICreateSlideDTO,
   IUpdatePresentationDTO,
+  IUpdateSlideAudioDTO,
   IUpdateSlideDTO,
 } from '../../types/AixmusicDTOTypes';
 import { extractAudioUrls } from '../../lib/audio-concat';
-import { IPresentationResponse } from '../../types/AixmusicApiTypes';
+import {
+  IPresentationResponse,
+  ISlideResponse,
+} from '../../types/AixmusicApiTypes';
 import { notify } from '../notification/notificationSlice';
+import { ThunkApi } from '../store';
+import { setIsRecording } from './presentationSlice';
 
 const api = AixmusicApi.getInstance();
 
@@ -19,7 +25,7 @@ export const getPresentation = createAsyncThunk(
       const data = await api.getPresentation(url);
       return data;
     } catch (err) {
-      dispatch(notify({text: 'Get presentation failed.', severity: 'error'}));
+      dispatch(notify({ text: 'Get presentation failed.', severity: 'error' }));
       console.log(err);
     }
   }
@@ -32,7 +38,9 @@ export const createPresentation = createAsyncThunk(
       const data = await api.createPresentation(dto);
       return data;
     } catch (err) {
-      dispatch(notify({text: 'Create presentation failed.', severity: 'error'}));
+      dispatch(
+        notify({ text: 'Create presentation failed.', severity: 'error' })
+      );
       console.log(err);
     }
   }
@@ -48,7 +56,9 @@ export const updatePresentation = createAsyncThunk(
       const data = await api.updatePresentation(url, dto);
       return data;
     } catch (err) {
-      dispatch(notify({text: 'Update presentation failed.', severity: 'error'}));
+      dispatch(
+        notify({ text: 'Update presentation failed.', severity: 'error' })
+      );
       console.log(err);
     }
   }
@@ -61,7 +71,9 @@ export const deletePresentation = createAsyncThunk(
       const data = await api.deletePresentation(url);
       return data;
     } catch (err) {
-      dispatch(notify({text: 'Delete presentation failed.', severity: 'error'}));
+      dispatch(
+        notify({ text: 'Delete presentation failed.', severity: 'error' })
+      );
       console.log(err);
     }
   }
@@ -74,7 +86,7 @@ export const createSlide = createAsyncThunk(
       const data = await api.createSlide(url, dto);
       return data;
     } catch (err) {
-      dispatch(notify({text: 'Create slide failed.', severity: 'error'}));
+      dispatch(notify({ text: 'Create slide failed.', severity: 'error' }));
       console.log(err);
     }
   }
@@ -87,7 +99,12 @@ export const createSlideImageOnly = createAsyncThunk(
       const data = await api.createSlideImageOnly(url, image);
       return data;
     } catch (err) {
-      dispatch(notify({text: 'Create slide with image only failed.', severity: 'error'}));
+      dispatch(
+        notify({
+          text: 'Create slide with image only failed.',
+          severity: 'error',
+        })
+      );
       console.log(err);
     }
   }
@@ -103,46 +120,41 @@ export const updateSlide = createAsyncThunk(
       const data = await api.updateSlide(slideID, dto);
       return data;
     } catch (err) {
-      dispatch(notify({text: 'Update slide failed.', severity: 'error'}));
+      dispatch(notify({ text: 'Update slide failed.', severity: 'error' }));
       console.log(err);
     }
   }
 );
 
-export const updateSlideAudio = createAsyncThunk(
-  'slide/update/audio',
-  async (
-    {
-      slideID,
-      audio,
-      duration,
-    }: { slideID: number; audio: Blob; duration: number },
-    { dispatch }
-  ) => {
-    try {
-      const data = await api.updateSlideAudio(slideID, audio, duration);
-      return data;
-    } catch (err) {
-      dispatch(notify({text: 'Update slide audio failed.', severity: 'error'}));
-      console.log(err);
-    }
+export const updateSlideAudio = createAsyncThunk<
+  ISlideResponse,
+  IUpdateSlideAudioDTO,
+  ThunkApi
+>('slide/update/audio', async (dto, { dispatch, extra }) => {
+  const { api } = extra;
+  try {
+    const data = await api.updateSlideAudio(dto);
+    return data;
+  } catch (err) {
+    dispatch(notify({ text: 'Update slide audio failed.', severity: 'error' }));
+    // dispatch(setIsRecording(false));
+    throw err;
   }
-);
+});
 
 export const updateSlideOrder = createAsyncThunk(
   'slide/update/order',
   async (
-    {
-      slideID,
-      order,
-    }: { slideID: number; order: number },
+    { slideID, order }: { slideID: number; order: number },
     { dispatch }
   ) => {
     try {
       const data = await api.updateSlideOrder(slideID, order);
       return data;
     } catch (err) {
-      dispatch(notify({text: 'Update slide order failed.', severity: 'error'}));
+      dispatch(
+        notify({ text: 'Update slide order failed.', severity: 'error' })
+      );
       console.log(err);
     }
   }
@@ -155,7 +167,9 @@ export const deleteSlideAudio = createAsyncThunk(
       const data = await api.deleteSlideAudio(slideID);
       return data;
     } catch (err) {
-      dispatch(notify({text: 'Delete slide audio failed.', severity: 'error'}));
+      dispatch(
+        notify({ text: 'Delete slide audio failed.', severity: 'error' })
+      );
       console.log(err);
     }
   }
@@ -166,10 +180,10 @@ export const deleteSlide = createAsyncThunk(
   async (slideID: number, { dispatch }) => {
     try {
       await api.deleteSlide(slideID);
-      dispatch(notify({text: 'Slide deleted!', severity: 'info'}));
+      dispatch(notify({ text: 'Slide deleted!', severity: 'info' }));
       return slideID;
-    } catch (err) {      
-      dispatch(notify({text: 'Delete slide failed.', severity: 'error'}));
+    } catch (err) {
+      dispatch(notify({ text: 'Delete slide failed.', severity: 'error' }));
       console.log(err);
     }
   }
@@ -189,10 +203,17 @@ export const uploadPresentation = createAsyncThunk(
       const res = await api.updatePresentation(presentation.url, {
         audio: blob,
       });
-      dispatch(notify({text: 'Presentation audio regenerated!', severity: 'info'}));
+      dispatch(
+        notify({ text: 'Presentation audio regenerated!', severity: 'info' })
+      );
       return res;
     } catch (err) {
-      dispatch(notify({text: 'Presentation audio regenerate failed.', severity: 'error'}));
+      dispatch(
+        notify({
+          text: 'Presentation audio regenerate failed.',
+          severity: 'error',
+        })
+      );
       console.log(err);
     }
   }

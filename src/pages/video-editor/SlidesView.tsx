@@ -43,6 +43,11 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyItems: 'center',
       alignItems: 'center',
     },
+    disabled: {
+      backgroundColor: theme.palette.grey[100],
+      opacity: 0.2,
+      pointerEvents: 'none',
+    },
   })
 );
 
@@ -87,7 +92,11 @@ export const SlidesView = (props: Props) => {
   };
 
   return (
-    <div className={classes.root}>
+    <div
+      className={
+        state.isRecording || state.isBusy.value ? `${classes.root} ${classes.disabled}` : `${classes.root}`
+      }
+    >
       {state.status === 'loading' ? (
         <CircularProgress color="secondary" />
       ) : (

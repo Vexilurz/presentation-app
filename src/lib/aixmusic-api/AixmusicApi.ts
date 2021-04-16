@@ -8,6 +8,7 @@ import {
   ICreatePresentationDTO,
   ICreateSlideDTO,
   IUpdatePresentationDTO,
+  IUpdateSlideAudioDTO,
   IUpdateSlideDTO,
 } from '../../types/AixmusicDTOTypes';
 import { HttpClient } from '../http-client/HttpClient';
@@ -121,15 +122,15 @@ export class AixmusicApi extends HttpClient {
     });
   }
 
-  public async updateSlideAudio(
-    slideID: number,
-    audio: Blob,
-    duration: number
-  ): Promise<ISlideResponse> {
+  public async updateSlideAudio({
+    id,
+    audio,
+    duration,
+  }: IUpdateSlideAudioDTO): Promise<ISlideResponse> {
     let formData = new FormData();
     formData.append('audio', audio, 'audio.mp3');
-    formData.append('duration', duration.toString())
-    return await this.instance.post(`slide/${slideID}/update`, formData, {
+    formData.append('duration', duration.toString());
+    return await this.instance.post(`slide/${id}/update`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -166,7 +167,7 @@ export class AixmusicApi extends HttpClient {
     return await this.instance.post(`slide/${slideID}/delete`);
   }
 
-  handleRequest (config: AxiosRequestConfig)  {
+  handleRequest(config: AxiosRequestConfig) {
     config.headers['Authorization'] = 'Bearer ' + this.token;
     return config;
   }

@@ -7,3 +7,5 @@ export interface Slideshow {
 export interface BoolValue {
   value: boolean;
 }
+
+export type ThunkStatus = 'idle' | 'loading' | 'succeeded' | 'failed';

@@ -21,3 +21,9 @@ export interface IUpdateSlideDTO {
   image: Blob;
   duration: number;
 }
+
+export interface IUpdateSlideAudioDTO {
+  id: number;
+  audio: Blob;
+  duration: number;
+}

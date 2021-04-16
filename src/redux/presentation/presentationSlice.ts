@@ -3,7 +3,7 @@ import {
   IPresentationResponse,
   ISlideResponse,
 } from '../../types/AixmusicApiTypes';
-import { BoolValue } from '../../types/CommonTypes';
+import { BoolValue, ThunkStatus } from '../../types/CommonTypes';
 import {
   createSlide,
   deleteSlide,
@@ -17,16 +17,20 @@ interface PresentationState {
   presentation: IPresentationResponse;
   selectedSlideId: number;
   isBusy: BoolValue;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  uploadStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+  status: ThunkStatus;
+  uploadStatus: ThunkStatus;
+  slideAudioProcessing: ThunkStatus;
+  isRecording: Boolean;
 }
 
 const initialState: PresentationState = {
   presentation: {} as IPresentationResponse,
   selectedSlideId: -1,
-  isBusy: {value: false},
+  isBusy: { value: false },
   status: 'idle',
   uploadStatus: 'idle',
+  slideAudioProcessing: 'idle',
+  isRecording: false,
 };
 
 const presentationSlice = createSlice({
@@ -39,14 +43,14 @@ const presentationSlice = createSlice({
     ) => {
       state.selectedSlideId = action.payload;
     },
-    setIsBusy: (
-      state: PresentationState,
-      action: PayloadAction<boolean>
-    ) => {
+    setIsBusy: (state: PresentationState, action: PayloadAction<boolean>) => {
       if (!state.selectedSlideId) {
         state.selectedSlideId = state.presentation.slides[0]?.id;
       }
-      state.isBusy = {value: action.payload};
+      state.isBusy = { value: action.payload };
+    },
+    setIsRecording: (state: PresentationState, action: PayloadAction<boolean>) => {
+      state.isRecording = action.payload;
     },
     setPresentationSlides: (
       state: PresentationState,
@@ -54,6 +58,11 @@ const presentationSlice = createSlice({
     ) => {
       const { payload } = action;
       state.presentation.slides = payload;
+    },
+    startSlideAudioProcessing: (
+      state: PresentationState,
+    ) => {
+      state.slideAudioProcessing = 'loading';
     },
   },
   // Thunk reducers
@@ -63,7 +72,9 @@ const presentationSlice = createSlice({
     });
     builder.addCase(getPresentation.fulfilled, (state, action) => {
       let tmp: IPresentationResponse = action.payload as IPresentationResponse;
-      tmp.slides?.sort((a, b) => a.order > b.order ? 1 : a.order < b.order ? -1 : 0);
+      tmp.slides?.sort((a, b) =>
+        a.order > b.order ? 1 : a.order < b.order ? -1 : 0
+      );
       state.presentation = tmp;
       state.selectedSlideId = state.presentation.slides[0]?.id;
       state.status = 'succeeded';
@@ -88,42 +99,43 @@ const presentationSlice = createSlice({
       );
       state.selectedSlideId = state.presentation.slides[0]?.id;
     });
-    builder.addCase(
-      updateSlideAudio.fulfilled,
-      (state, action) => {
-        const { payload } = action;
-        let slides: (ISlideResponse | undefined)[] = [] as ISlideResponse[];
-        slides = state.presentation.slides?.map((slide) =>
-          payload?.id !== slide.id ? slide : payload
-        );
-        // @ts-ignore
-        state.presentation.slides = slides;
-      }
-    );
-    builder.addCase(
-      deleteSlideAudio.fulfilled,
-      (state, action) => {
-        const { payload } = action;
-        let slides: (ISlideResponse | undefined)[] = [] as ISlideResponse[];
-        slides = state.presentation.slides?.map((slide) =>
-          payload?.id !== slide.id ? slide : payload
-        );
-        // @ts-ignore
-        state.presentation.slides = slides;
-      }
-    );
-    builder.addCase(
-      createSlide.fulfilled,
-      (state, action) => {
-        const { payload } = action;
-        let slides: ISlideResponse[] = state.presentation.slides ? state.presentation.slides : [] as ISlideResponse[];
-        if (payload) slides.push(payload);
-        state.presentation.slides = slides;
-      }
-    );
+
+    builder.addCase(updateSlideAudio.fulfilled, (state, action) => {
+      const { payload } = action;
+      let slides = [] as ISlideResponse[];
+      slides = state.presentation.slides.map((slide) =>
+        payload.id !== slide.id ? slide : payload
+      );
+      state.presentation.slides = slides;
+      state.slideAudioProcessing = "idle";
+    });
+
+    builder.addCase(deleteSlideAudio.fulfilled, (state, action) => {
+      const { payload } = action;
+      let slides: (ISlideResponse | undefined)[] = [] as ISlideResponse[];
+      slides = state.presentation.slides?.map((slide) =>
+        payload?.id !== slide.id ? slide : payload
+      );
+      // @ts-ignore
+      state.presentation.slides = slides;
+    });
+    builder.addCase(createSlide.fulfilled, (state, action) => {
+      const { payload } = action;
+      let slides: ISlideResponse[] = state.presentation.slides
+        ? state.presentation.slides
+        : ([] as ISlideResponse[]);
+      if (payload) slides.push(payload);
+      state.presentation.slides = slides;
+    });
   },
 });
 
-export const { setSelectedSlideId, setIsBusy, setPresentationSlides } = presentationSlice.actions;
+export const {
+  setSelectedSlideId,
+  setIsBusy,
+  setPresentationSlides,
+  startSlideAudioProcessing,
+  setIsRecording,
+} = presentationSlice.actions;
 
 export default presentationSlice.reducer;

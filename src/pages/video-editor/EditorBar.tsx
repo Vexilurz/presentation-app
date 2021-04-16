@@ -1,6 +1,7 @@
 import {
   BottomNavigation,
   BottomNavigationAction,
+  CircularProgress,
   createStyles,
   makeStyles,
   Menu,
@@ -28,6 +29,7 @@ import { getAssetsUrl } from '../../lib/assests-helper';
 import ReactAudioPlayer from 'react-audio-player';
 import * as mm from 'music-metadata-browser';
 import { notify } from '../../redux/notification/notificationSlice';
+import { setIsRecording, startSlideAudioProcessing } from '../../redux/presentation/presentationSlice';
 
 const Mp3Recorder = new MicRecorder({ bitRate: 96 });
 let countRecTimer: NodeJS.Timeout;
@@ -64,13 +66,13 @@ export default function EditorBar(props: Props): ReactElement {
 
   // *** Recording ***
 
-  const [isRecording, setIsRecording] = useState(false);
+  const [isRecording, setIsRecordings] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [recTimer, setRecTimer] = useState(0);
-  
+
   const getNewRecKey = (): string => {
     return new Date().toISOString();
-  }
+  };
   const [recKey, setRecKey] = useState(getNewRecKey());
 
   useEffect(() => {
@@ -90,10 +92,10 @@ export default function EditorBar(props: Props): ReactElement {
     if (isBlocked) {
       console.log('Recording Permission Denied');
     } else {
-      
+      dispatch(setIsRecording(true));
       await dispatch(deleteSlideAudio(props.slideId));
       await Mp3Recorder.start();
-      setIsRecording(true);
+      setIsRecordings(true);
       setRecTimer(0);
       countRecTimer = setInterval(() => {
         setRecTimer((timer) => timer + 1);
@@ -102,21 +104,27 @@ export default function EditorBar(props: Props): ReactElement {
   };
 
   const stopRec = async () => {
+    dispatch(startSlideAudioProcessing());
     const [buffer, blob] = await Mp3Recorder.stop().getMp3();
     const metadata = await mm.parseBlob(blob);
     await dispatch(
       updateSlideAudio({
-        slideID: state.selectedSlideId,
+        id: state.selectedSlideId,
         audio: blob,
         duration: metadata.format.duration as number,
       })
     );
     clearInterval(countRecTimer);
-    setIsRecording(false);
+    setIsRecordings(false);
     setRecKey(getNewRecKey());
+    dispatch(setIsRecording(false));
   };
 
-  const recIcon = isRecording ? <StopIcon /> : <FiberManualRecordIcon />;
+  const recIcon = isRecording ? (
+    <FiberManualRecordIcon style={{ color: '#f44336' }} />
+  ) : (
+    <FiberManualRecordIcon />
+  );
   const recLabel = isRecording ? `${fmtMSS(recTimer.toFixed(0))}` : 'Record';
   const onRecClick = () => {
     if (isRecording) stopRec();
@@ -171,12 +179,12 @@ export default function EditorBar(props: Props): ReactElement {
   const handleDeleteSlide = () => {
     handleMenuClose();
     dispatch(deleteSlide(state.selectedSlideId));
-  }
+  };
   const handleDeleteRecord = async () => {
     handleMenuClose();
     await dispatch(deleteSlideAudio(state.selectedSlideId));
-    dispatch(notify({text: 'Slide audio record deleted!', severity: 'info'}));
-  }
+    dispatch(notify({ text: 'Slide audio record deleted!', severity: 'info' }));
+  };
 
   return (
     <Paper variant="outlined" className={classes.root}>
@@ -188,8 +196,8 @@ export default function EditorBar(props: Props): ReactElement {
         showLabels={true}
       >
         <BottomNavigationAction
-          label={recLabel}
-          icon={recIcon}
+          label={state.slideAudioProcessing === 'loading' ? null : recLabel}
+          icon={state.slideAudioProcessing === 'loading' ? <CircularProgress color="secondary"/> : recIcon}
           onClick={onRecClick}
         />
         <BottomNavigationAction
@@ -201,10 +209,11 @@ export default function EditorBar(props: Props): ReactElement {
         {state.selectedSlideId ? (
           <BottomNavigationAction
             icon={<MoreHorizIcon />}
+            label="More"
             onClick={handleMenuClick}
           />
-        ) : null}  
-        {state.selectedSlideId ? (  
+        ) : null}
+        {state.selectedSlideId ? (
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}
@@ -213,7 +222,9 @@ export default function EditorBar(props: Props): ReactElement {
             onClose={handleMenuClose}
           >
             <MenuItem onClick={handleDeleteSlide}>Delete slide</MenuItem>
-            <MenuItem onClick={handleDeleteRecord}>Delete audio record</MenuItem>
+            <MenuItem onClick={handleDeleteRecord}>
+              Delete audio record
+            </MenuItem>
           </Menu>
         ) : null}
       </BottomNavigation>
@@ -221,7 +232,7 @@ export default function EditorBar(props: Props): ReactElement {
         <ReactAudioPlayer
           id={recKey}
           key={recKey}
-          src={getAssetsUrl(props.audioUrl as string)+`?key=${recKey}`}
+          src={getAssetsUrl(props.audioUrl as string) + `?key=${recKey}`}
           controls
           ref={(element) => {
             audioEl = element?.audioEl as React.RefObject<HTMLAudioElement>;
@@ -233,7 +244,6 @@ export default function EditorBar(props: Props): ReactElement {
             setPlayLabel('Play');
           }}
           style={{ display: 'none' }}
-          
         />
       ) : null}
     </Paper>
