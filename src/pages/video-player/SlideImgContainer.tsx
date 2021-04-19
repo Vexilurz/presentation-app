@@ -4,6 +4,8 @@ import React from 'react';
 interface Props {
   src: string;
   isOverlayShowed: boolean;
+  playing: boolean;
+  setPlaying: (playing: boolean) => void;
 }
 
 const useStyles = (props: { isOverlayShowed: boolean }) =>
@@ -21,10 +23,20 @@ const useStyles = (props: { isOverlayShowed: boolean }) =>
     })
   );
 
-export const SlideImgContainer = ({ src, isOverlayShowed }: Props) => {
+export const SlideImgContainer = ({
+  src,
+  isOverlayShowed,
+  playing,
+  setPlaying,
+}: Props) => {
   const classes = useStyles({ isOverlayShowed })();
   return (
-    <div className={classes.slideImageContainer}>
+    <div
+      className={classes.slideImageContainer}
+      onClick={() => {
+        setPlaying(!playing);
+      }}
+    >
       <img className={classes.slideImage} src={src} alt="" />
     </div>
   );

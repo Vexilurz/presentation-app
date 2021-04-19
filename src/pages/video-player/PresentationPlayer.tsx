@@ -17,7 +17,7 @@ export const PresentationPlayer = ({
   className,
   slideshow,
   presentationTitle,
-  whileLabel
+  whileLabel,
 }: Props) => {
   // Maybe join to one state obj?
   const [playing, setPlaying] = useState(false);
@@ -75,6 +75,8 @@ export const PresentationPlayer = ({
         setIsShowed={setOverlayShowed}
       />
       <SlideImgContainer
+        playing={playing}
+        setPlaying={setPlaying}
         src={currentSlide.img}
         isOverlayShowed={isOverlayShowed}
       />
