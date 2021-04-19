@@ -24,7 +24,7 @@ interface Props {
   setVolumeValue: (volume: number) => void;
   fullScreen: boolean;
   setFullScreen: (fullScreen: boolean) => void;
-  whileLabel?: string;
+  whileLabel?: number;
 }
 
 function fmtMSS(s: any) {
@@ -152,11 +152,11 @@ export const PlayerToolbar = ({
           totalTime.toFixed(0)
         )}`}</Typography>
         <div className={classes.whiteLabelContainer}>
-          {whileLabel === '0' ? (
+          {whileLabel === 0 && (
             <a href={process.env.REACT_APP_WHILE_LABEL_SRC}>
               <img height="25" src={process.env.REACT_APP_WHILE_LABEL_HREF} alt="" />
             </a>
-          ) : null}
+          ) }
         </div>
         <IconButton
           aria-label="fullscreen"

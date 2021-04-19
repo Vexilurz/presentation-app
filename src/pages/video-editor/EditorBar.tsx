@@ -93,7 +93,6 @@ export default function EditorBar(props: Props): ReactElement {
       console.log('Recording Permission Denied');
     } else {
       dispatch(setIsRecording(true));
-      await dispatch(deleteSlideAudio(props.slideId));
       await Mp3Recorder.start();
       setIsRecordings(true);
       setRecTimer(0);
@@ -107,6 +106,7 @@ export default function EditorBar(props: Props): ReactElement {
     dispatch(startSlideAudioProcessing());
     const [buffer, blob] = await Mp3Recorder.stop().getMp3();
     const metadata = await mm.parseBlob(blob);
+    await dispatch(deleteSlideAudio(props.slideId));
     await dispatch(
       updateSlideAudio({
         id: state.selectedSlideId,

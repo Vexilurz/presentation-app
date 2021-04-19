@@ -10,7 +10,7 @@ interface Props {
   slideshow: Slideshow[];
   presentationTitle: string;
   className: any;
-  whileLabel?: string;
+  whileLabel?: number;
 }
 
 export const PresentationPlayer = ({
