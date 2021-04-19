@@ -85,7 +85,7 @@ export const VideoEditorPage = (props: Props) => {
           <SlidesView presentationUrl={presentationUrl} />
           <SlidesViewBottomRow presentationUrl={presentationUrl} />
         </Grid>
-        {state.presentation.id ? (
+        {state.presentation.url ? (
           <Grid item md={10} className={classes.workspace}>
             <SlideToolbar />
             {state.isBusy?.value ? (
