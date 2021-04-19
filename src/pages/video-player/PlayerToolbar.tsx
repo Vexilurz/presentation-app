@@ -153,7 +153,7 @@ export const PlayerToolbar = ({
         )}`}</Typography>
         <div className={classes.whiteLabelContainer}>
           {whileLabel === 0 && (
-            <a href={process.env.REACT_APP_WHILE_LABEL_HREF}>
+            <a href={process.env.REACT_APP_WHILE_LABEL_HREF} target="_blank">
               <img height="25" src={process.env.REACT_APP_WHILE_LABEL_SRC} alt="" />
             </a>
           ) }
