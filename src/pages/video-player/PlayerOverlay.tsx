@@ -23,6 +23,9 @@ const ColorButton = withStyles((theme: Theme) => ({
     width: '68px',
     height: '48px',
     borderRadius: '28%',
+    '&:hover': {
+      backgroundColor: '#3b8a3e',
+    },
   },
 }))(IconButton);
 
@@ -42,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     buttonContainer: {
       width: '100%',
-    }
+    },
   })
 );
 
