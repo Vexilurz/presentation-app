@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     slideImage: {
       margin: '30px 0',
+      display: 'block',
+      height: '90%'
     },
     message: {
       height: '100%',
