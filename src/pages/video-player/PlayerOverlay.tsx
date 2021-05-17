@@ -38,13 +38,15 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     presentationTitle: {
-      alignSelf: 'flex-start',
       padding: theme.spacing(2),
       width: '100%',
       color: theme.palette.primary.main,
+      position: 'absolute',
+      top: '0',
+      left: '0'
     },
     buttonContainer: {
-      width: '100%',
+     
     },
   })
 );
