@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: '55px',
       height: '90%',
       width: '100%',
-      backgroundColor: 'grey',
       display: 'flex',
       alignItems: 'center',
       overflowX: 'scroll',

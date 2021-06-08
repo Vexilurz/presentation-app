@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.grey[100],
       display: 'flex',
       justifyContent: 'center',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         maxWidth: '100% ',
       },
     },
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: '30px 0',
       display: 'block',
       height: '90%',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         maxWidth: '100% ',
       },
     },

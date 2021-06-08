@@ -6,6 +6,7 @@ import {
   Theme,
   Typography,
   useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     grid: {
       height: '100%',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         display: 'block',
       },
     },
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         height: '70%',
       },
     },
@@ -74,7 +75,8 @@ export const VideoEditorPage = (props: Props) => {
   const classes = useStyles();
   const state = useSelector((state: RootState) => state.presentation);
 
-  const isTabletOrMobile = useMediaQuery('(max-width: 1224px)');
+  const theme = useTheme();
+  const isTabletOrMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   let selectedSlide: ISlideResponse | undefined =
     state.presentation.slides?.find(

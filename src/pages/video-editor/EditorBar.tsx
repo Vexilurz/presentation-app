@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       allignItems: 'center',
       justifyContent: 'center',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         left: '0',
         bottom: '0',
         width: '99%',
