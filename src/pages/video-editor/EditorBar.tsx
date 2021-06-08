@@ -29,7 +29,10 @@ import { getAssetsUrl } from '../../lib/assests-helper';
 import ReactAudioPlayer from 'react-audio-player';
 import * as mm from 'music-metadata-browser';
 import { notify } from '../../redux/notification/notificationSlice';
-import { setIsRecording, startSlideAudioProcessing } from '../../redux/presentation/presentationSlice';
+import {
+  setIsRecording,
+  startSlideAudioProcessing,
+} from '../../redux/presentation/presentationSlice';
 
 const Mp3Recorder = new MicRecorder({ bitRate: 96 });
 let countRecTimer: NodeJS.Timeout;
@@ -44,13 +47,18 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '70px',
       width: '350px',
       backgroundColor: theme.palette.common.white,
-      position: 'fixed',
-      left: '47%',
-      bottom: '20px',
+      position: 'relative',
+      left: 'calc(50% - 350px / 2)',
+      bottom: '100px',
       display: 'flex',
       flexDirection: 'column',
       allignItems: 'center',
       justifyContent: 'center',
+      [theme.breakpoints.down('xs')]: {
+        left: '0',
+        bottom: '0',
+        width: '99%',
+      },
     },
   })
 );
@@ -197,7 +205,13 @@ export default function EditorBar(props: Props): ReactElement {
       >
         <BottomNavigationAction
           label={state.slideAudioProcessing === 'loading' ? null : recLabel}
-          icon={state.slideAudioProcessing === 'loading' ? <CircularProgress color="secondary"/> : recIcon}
+          icon={
+            state.slideAudioProcessing === 'loading' ? (
+              <CircularProgress color="secondary" />
+            ) : (
+              recIcon
+            )
+          }
           onClick={onRecClick}
         />
         <BottomNavigationAction

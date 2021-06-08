@@ -5,6 +5,7 @@ import {
   makeStyles,
   Theme,
   Typography,
+  useMediaQuery,
 } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -18,6 +19,7 @@ import { SlideToolbar } from './SlideToolbar';
 import SlideImg from './SlideImg';
 import { AixmusicApi } from '../../lib/aixmusic-api/AixmusicApi';
 import { AddFromPdfButton } from './AddFromPdfButton';
+import { SlidesViewMobile } from './SlidesViewMobile';
 
 interface Props {}
 
@@ -33,6 +35,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     grid: {
       height: '100%',
+      [theme.breakpoints.down('xs')]: {
+        display: 'block',
+      },
     },
     sidebar: {
       zIndex: 1,
@@ -47,6 +52,9 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
+      [theme.breakpoints.down('xs')]: {
+        height: '70%',
+      },
     },
     message: {
       height: '100%',
@@ -55,6 +63,10 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
+    slideViewMobile: {
+      height: '19%',
+      width: '100%',
+    },
   })
 );
 
@@ -62,11 +74,12 @@ export const VideoEditorPage = (props: Props) => {
   const classes = useStyles();
   const state = useSelector((state: RootState) => state.presentation);
 
-  let selectedSlide:
-    | ISlideResponse
-    | undefined = state.presentation.slides?.find(
-    (slide) => slide.id === state.selectedSlideId
-  );
+  const isTabletOrMobile = useMediaQuery('(max-width: 1224px)');
+
+  let selectedSlide: ISlideResponse | undefined =
+    state.presentation.slides?.find(
+      (slide) => slide.id === state.selectedSlideId
+    );
 
   let { presentationUrl, token } = useParams<ParamTypes>();
 
@@ -81,10 +94,12 @@ export const VideoEditorPage = (props: Props) => {
   return (
     <div className={classes.root}>
       <Grid container className={classes.grid}>
-        <Grid item md={2} className={classes.sidebar}>
-          <SlidesView presentationUrl={presentationUrl} />
-          <SlidesViewBottomRow presentationUrl={presentationUrl} />
-        </Grid>
+        {!isTabletOrMobile && (
+          <Grid item md={2} className={classes.sidebar}>
+            <SlidesView presentationUrl={presentationUrl} />
+            <SlidesViewBottomRow presentationUrl={presentationUrl} />
+          </Grid>
+        )}
         {state.presentation.url ? (
           <Grid item md={10} className={classes.workspace}>
             <SlideToolbar />
@@ -103,6 +118,12 @@ export const VideoEditorPage = (props: Props) => {
                 <AddFromPdfButton presentationUrl={presentationUrl} />
               </div>
             )}
+            {state.selectedSlideId ? (
+              <EditorBar
+                audioUrl={selectedSlide?.audio}
+                slideId={state.selectedSlideId}
+              />
+            ) : null}
           </Grid>
         ) : (
           <Grid item md={10} className={classes.workspace}>
@@ -111,12 +132,12 @@ export const VideoEditorPage = (props: Props) => {
             </Typography>
           </Grid>
         )}
-        {state.selectedSlideId ? (
-          <EditorBar
-            audioUrl={selectedSlide?.audio}
-            slideId={state.selectedSlideId}
-          />
-        ) : null}
+        {isTabletOrMobile && (
+          <Grid item sm={12} className={classes.slideViewMobile}>
+            <SlidesViewMobile presentationUrl={presentationUrl} />
+            <SlidesViewBottomRow presentationUrl={presentationUrl} />
+          </Grid>
+        )}
       </Grid>
     </div>
   );

@@ -15,11 +15,17 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.grey[100],
       display: 'flex',
       justifyContent: 'center',
+      [theme.breakpoints.down('xs')]: {
+        maxWidth: '100% ',
+      },
     },
     slideImage: {
       margin: '30px 0',
       display: 'block',
-      height: '90%'
+      height: '90%',
+      [theme.breakpoints.down('xs')]: {
+        maxWidth: '100% ',
+      },
     },
     message: {
       height: '100%',
@@ -38,14 +44,8 @@ function SlideImg({ src }: Props): ReactElement {
   return (
     <div className={classes.slideImageContainer}>
       {state.selectedSlideId ? (
-        <img
-          src={getAssetsUrl(src)}
-          alt=""
-          className={classes.slideImage}
-        />
-      ) : (
-        null
-      )}
+        <img src={getAssetsUrl(src)} alt="" className={classes.slideImage} />
+      ) : null}
     </div>
   );
 }

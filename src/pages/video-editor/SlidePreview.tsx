@@ -37,6 +37,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
       padding: '3px 0',
+      [theme.breakpoints.down('xs')]: {
+        maxWidth: '100px',
+      },
     },
     slide: {
       boxSizing: 'border-box',
